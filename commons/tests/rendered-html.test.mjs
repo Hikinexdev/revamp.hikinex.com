@@ -22,8 +22,25 @@ test("renders a branded H!KINEX portal", async () => {
 
 test("keeps role navigation, official departments and safe actions", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const department of ["H!KINEX", "Sales", "Recruiting", "Marketing", "E-Discovery", "IT"]) assert.match(page, new RegExp(department));
+  for (const department of ["H!KINEX", "Sales", "Recruiting", "Marketing", "IT", "DogFoodDev"]) assert.match(page, new RegExp(department));
   assert.match(page, /role === "Admin"|role === "Manager"/);
   assert.match(page, /navigate\("Apps"\)|setView\("Apps"\)/);
   assert.match(page, /illustrative|prototype/i);
+});
+
+test("uses the approved app catalog and immediate Add an App language", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  for (const application of ["Mission Control", "TimeKeeper", "REET", "TalentDirector", "InvSync", "SoftwareTracker", "RegEv · ATS", "DFD TimeKeeper"]) assert.match(page, new RegExp(application));
+  assert.match(page, /Add an App/);
+  assert.doesNotMatch(page, /Request an App/);
+  assert.match(page, /target="_blank"/);
+  assert.match(page, /noopener noreferrer/);
+});
+
+test("keeps role defaults separate and protects review mode", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector"\]/);
+  assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker"\]/);
+  assert.match(page, /Review mode/);
+  assert.match(page, /Sign in to add/);
 });

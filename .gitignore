@@ -1,0 +1,13 @@
+**/node_modules/
+node_modules
+**/.next/
+**/.vinext/
+**/.wrangler/
+**/dist/
+github-pages/
+*.log
+.DS_Store
+**/.env
+**/.env.*
+!**/.env.example
+**/next-env.d.ts
