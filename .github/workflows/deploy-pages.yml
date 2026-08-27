@@ -32,6 +32,9 @@ jobs:
         run: npm install && npm run build
       - name: Install and build Commons
         working-directory: commons
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm install && npm run build
       - name: Create static GitHub Pages bundle
         run: node scripts/export-github-pages.mjs
