@@ -2,11 +2,13 @@
 
 Interactive, role-aware portal concepts prepared from the H!KINEX Employee Hub proposal.
 
-## Live review links
+## GitHub Pages review links
 
-1. [Portal Concept Comparison](https://hikinex-portal-concepts.marianacruzuluaga.chatgpt.site/) — seven layout directions with Employee, Manager, and Admin views.
-2. [H!KINEX Navigator](https://hikinex-navigator.marianacruzuluaga.chatgpt.site/) — work-first employee portal.
-3. [H!KINEX Commons](https://hikinex-commons.marianacruzuluaga.chatgpt.site/) — community-first employee portal.
+1. [Portal Concept Comparison](https://marianahiki.github.io/revamp.hikinex.com/portal-concepts/) — seven layout directions with Employee, Manager, and Admin views.
+2. [H!KINEX Navigator](https://marianahiki.github.io/revamp.hikinex.com/navigator/) — work-first employee portal.
+3. [H!KINEX Commons](https://marianahiki.github.io/revamp.hikinex.com/commons/) — community-first employee portal.
+
+The previous ChatGPT Sites links remain available as a temporary fallback during the GitHub Pages transition.
 
 ## Included requirements
 
