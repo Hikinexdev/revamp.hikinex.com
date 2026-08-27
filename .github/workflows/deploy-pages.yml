@@ -24,11 +24,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            portal-concepts/package.json
-            navigator/package.json
-            commons/package.json
       - name: Install and build Portal Concepts
         working-directory: portal-concepts
         run: npm install && npm run build
