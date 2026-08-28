@@ -52,3 +52,11 @@ test("keeps role defaults separate and enforces authenticated roles", async () =
   assert.doesNotMatch(page, /Public read-only review/);
   assert.doesNotMatch(page, /localStorage/);
 });
+
+test("offers tenant-scoped Microsoft organizational sign-in", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /Continue with Microsoft/);
+  assert.match(page, /provider: "azure"/);
+  assert.match(page, /scopes: "email"/);
+  assert.match(page, /window\.location\.origin/);
+});
