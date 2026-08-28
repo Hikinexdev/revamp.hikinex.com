@@ -32,6 +32,13 @@ const roleDefaults: Record<Role, string[]> = {
   Admin: [...employeeDefaults, "invsync", "softwaretracker"],
 };
 
+const sharedOptionalApps = ["canva", "semrush", "reqev-ats", "dfd-timekeeper"];
+const roleCatalogApps: Record<Role, string[]> = {
+  Employee: [...employeeDefaults, ...sharedOptionalApps],
+  Manager: [...employeeDefaults, "reet", "talentdirector", ...sharedOptionalApps],
+  Admin: [...employeeDefaults, "invsync", "softwaretracker", ...sharedOptionalApps],
+};
+
 const people = [
   ["Ava Mitchell", "Marketing Specialist", "AM", "Marketing"], ["Daniel Kim", "E-Discovery Manager", "DK", "E-Discovery"],
   ["Maya Patel", "Talent Partner", "MP", "Recruiting"], ["Noah Williams", "Sales Associate", "NW", "Sales"],
@@ -73,8 +80,8 @@ function HomeView({ role, assignedIds, canEdit, navigate, onAdd, onRemove }: { r
 function AppsView({ role, assignedIds, canEdit, onAdd, onRemove }: { role: Role; assignedIds: Set<string>; canEdit: boolean; onAdd: (app: Application) => void; onRemove: (app: Application) => void }) {
   const [search, setSearch] = useState(""); const [selected, setSelected] = useState("All");
   const groups = ["All", "H!KINEX", "Sales", "Recruiting", "Marketing", "IT", "DogFoodDev"];
-  const results = apps.filter((app) => (selected === "All" || app.group === selected) && `${app.name} ${app.description}`.toLowerCase().includes(search.toLowerCase()));
-  return <section><PageHead eyebrow="WORK" title="Add an App" copy={canEdit ? "Choose any approved application. It will appear in My Apps immediately." : "Explore the approved directory in Review mode. Sign in to save applications to My Apps."} /><div className="directory-tools"><label>⌕ <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search applications" /></label><div>{groups.map((group) => <button className={selected === group ? "active" : ""} onClick={() => setSelected(group)} key={group}>{group}</button>)}</div></div><div className="directory-grid">{results.map((app) => <AppTile key={app.id} app={app} assigned={assignedIds.has(app.id)} protectedApp={roleDefaults[role].includes(app.id)} directory canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} />)}</div>{results.length === 0 && <div className="empty-state"><strong>No applications found</strong><span>Try another name or department.</span></div>}</section>;
+  const results = apps.filter((app) => roleCatalogApps[role].includes(app.id) && (selected === "All" || app.group === selected) && `${app.name} ${app.description}`.toLowerCase().includes(search.toLowerCase()));
+  return <section><PageHead eyebrow="WORK" title="Add an App" copy={canEdit ? `Choose an application approved for the ${role} role. It will appear in My Apps immediately.` : "Explore the approved directory in Review mode. Sign in to save applications to My Apps."} /><div className="directory-tools"><label>⌕ <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search applications" /></label><div>{groups.map((group) => <button className={selected === group ? "active" : ""} onClick={() => setSelected(group)} key={group}>{group}</button>)}</div></div><div className="directory-grid">{results.map((app) => <AppTile key={app.id} app={app} assigned={assignedIds.has(app.id)} protectedApp={roleDefaults[role].includes(app.id)} directory canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} />)}</div>{results.length === 0 && <div className="empty-state"><strong>No applications found</strong><span>Try another name or department.</span></div>}</section>;
 }
 
 function AnnouncementsView({ role, notify }: { role: Role; notify: (message: string) => void }) {
