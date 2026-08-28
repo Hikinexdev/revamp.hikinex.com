@@ -37,11 +37,14 @@ test("uses the approved app catalog and immediate Add an App language", async ()
   assert.match(page, /noopener noreferrer/);
 });
 
-test("keeps role defaults separate and protects review mode", async () => {
+test("keeps role defaults separate and enforces authenticated roles", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector"\]/);
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker"\]/);
-  assert.match(page, /Review mode/);
-  assert.match(page, /Sign in to add/);
+  assert.match(page, /profiles"\)\.select\("role"\)/);
+  assert.match(page, /role === "Manager" && \(view === "Team" \|\| view === "Requests"\)/);
+  assert.match(page, /role === "Admin" && view === "Admin"/);
+  assert.doesNotMatch(page, /Preview role/);
+  assert.doesNotMatch(page, /Public read-only review/);
   assert.doesNotMatch(page, /localStorage/);
 });
