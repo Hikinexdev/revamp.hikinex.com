@@ -62,3 +62,12 @@ test("offers tenant-scoped Microsoft organizational sign-in", async () => {
   assert.match(page, /skipBrowserRedirect: true/);
   assert.match(page, /window\.location\.assign\(data\.url\)/);
 });
+
+test("greets each authenticated user with their own account name", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /metadata\.full_name/);
+  assert.match(page, /select\("display_name"\)/);
+  assert.match(page, /nameFromEmail\(user\.email\)/);
+  assert.match(page, /Welcome, \{displayName\}/);
+  assert.doesNotMatch(page, /user: "Mariana"|user: "Alex"|user: "Jordan"/);
+});
