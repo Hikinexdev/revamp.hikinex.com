@@ -201,14 +201,18 @@ export default function Portal() {
     setAuthBusy(true);
     setAuthMessage("");
     const redirectTo = `${window.location.origin}${window.location.pathname}`;
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "azure",
-      options: { scopes: "email", redirectTo },
+      options: { scopes: "email", redirectTo, skipBrowserRedirect: true },
     });
     if (error) {
       setAuthBusy(false);
       setAuthMessage("Microsoft organizational sign-in could not start. Please contact IT if the problem continues.");
+      return;
     }
+    if (data.url) { window.location.assign(data.url); return; }
+    setAuthBusy(false);
+    setAuthMessage("Microsoft did not return a sign-in address. Please contact IT so the Azure provider settings can be checked.");
   };
   const signOut = async () => { if (supabase) await supabase.auth.signOut(); setAddedIds([]); setRole("Employee"); setView("Home"); };
   const labels: Record<View, string> = { Home: "Home", Apps: "Apps & Tools", Announcements: "Announcements", Feed: "Company Feed", Groups: "Groups & Clubs", People: "People", Jobs: "Jobs & Referrals", Team: "My Team", Requests: "Access Requests", Admin: "Admin Console" };
