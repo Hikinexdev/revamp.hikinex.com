@@ -59,4 +59,6 @@ test("offers tenant-scoped Microsoft organizational sign-in", async () => {
   assert.match(page, /provider: "azure"/);
   assert.match(page, /scopes: "email"/);
   assert.match(page, /window\.location\.origin/);
+  assert.match(page, /skipBrowserRedirect: true/);
+  assert.match(page, /window\.location\.assign\(data\.url\)/);
 });
