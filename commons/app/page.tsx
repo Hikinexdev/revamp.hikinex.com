@@ -44,11 +44,20 @@ const people = [
   ["Maya Patel", "Talent Partner", "MP", "Recruiting"], ["Noah Williams", "Sales Associate", "NW", "Sales"],
 ];
 
-const roleCopy: Record<Role, { user: string; title: string; team: string }> = {
-  Employee: { user: "Mariana", title: "Marketing Specialist", team: "Marketing" },
-  Manager: { user: "Alex", title: "Marketing Manager", team: "Marketing" },
-  Admin: { user: "Jordan", title: "Portal Administrator", team: "All departments" },
+const roleCopy: Record<Role, { title: string; team: string }> = {
+  Employee: { title: "Employee", team: "H!KINEX" },
+  Manager: { title: "Manager", team: "H!KINEX" },
+  Admin: { title: "Portal Administrator", team: "All departments" },
 };
+
+function nameFromEmail(email?: string) {
+  const localPart = email?.split("@")[0] ?? "";
+  return localPart
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ") || "there";
+}
 
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
 
@@ -66,9 +75,38 @@ function AppTile({ app, assigned, protectedApp, directory = false, canEdit, onAd
 
 function HomeView({ role, assignedIds, canEdit, navigate, onAdd, onRemove }: { role: Role; assignedIds: Set<string>; canEdit: boolean; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void }) {
   const profile = roleCopy[role];
+  const [displayName, setDisplayName] = useState("there");
   const visibleApps = apps.filter((app) => assignedIds.has(app.id));
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadDisplayName() {
+      if (!supabase) return;
+      const { data: userResult } = await supabase.auth.getUser();
+      const user = userResult.user;
+      if (!user || !active) return;
+
+      const { data: savedProfile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!active) return;
+
+      const metadata = user.user_metadata as Record<string, unknown>;
+      const accountName = [metadata.full_name, metadata.name, metadata.display_name]
+        .find((value) => typeof value === "string" && value.trim()) as string | undefined;
+
+      setDisplayName(accountName?.trim() || savedProfile?.display_name?.trim() || nameFromEmail(user.email));
+    }
+
+    void loadDisplayName();
+    return () => { active = false; };
+  }, []);
+
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>Welcome, {profile.user}.<br /><em>Your people and work, together.</em></h1><p>{profile.title} · {profile.team} · 4 new community updates</p></div><div className="welcome-stats"><div><strong>{visibleApps.length}</strong><span>My apps</span></div><div><strong>{role === "Employee" ? "4" : "3"}</strong><span>New stories</span></div></div></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>Welcome, {displayName}.<br /><em>Your people and work, together.</em></h1><p>{profile.title} · {profile.team} · 4 new community updates</p></div><div className="welcome-stats"><div><strong>{visibleApps.length}</strong><span>My apps</span></div><div><strong>{role === "Employee" ? "4" : "3"}</strong><span>New stories</span></div></div></section>
     <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My apps & tools</h2></div><button onClick={() => navigate("Apps")}>View directory →</button></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} />)}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add an App</strong><small>Browse the approved directory</small></button></div></section>
       <section className="panel announcement"><p className="kicker">COMPANY UPDATE</p><span className="date">AUG 27</span><h2>H!KINEX Learning Week starts Monday</h2><p>Short daily sessions, practical tools and an open Q&A with department leads.</p><button onClick={() => navigate("Announcements")}>Read update →</button></section>
       <section className="panel feed-card"><div className="section-head"><div><p className="kicker">COMMUNITY</p><h2>From your feed</h2></div><span className="live">● LIVE</span></div><div className="feed-person"><span>AM</span><p><strong>Ava Mitchell</strong><small>Marketing · 18 min ago</small></p></div><p>Our new campaign checklist is ready. I added the final launch steps and owner notes.</p><div className="reactions"><button onClick={() => notify("Reaction added for this preview only.")}>👏 12</button><button onClick={() => notify("Comments are illustrative only.")}>3 comments</button></div></section>
