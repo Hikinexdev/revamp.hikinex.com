@@ -43,4 +43,5 @@ test("keeps role defaults separate and protects review mode", async () => {
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker"\]/);
   assert.match(page, /Review mode/);
   assert.match(page, /Sign in to add/);
+  assert.doesNotMatch(page, /localStorage/);
 });
