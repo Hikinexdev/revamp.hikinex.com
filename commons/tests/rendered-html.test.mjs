@@ -41,6 +41,10 @@ test("keeps role defaults separate and enforces authenticated roles", async () =
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector"\]/);
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker"\]/);
+  assert.match(page, /Employee: \[\.\.\.employeeDefaults, \.\.\.sharedOptionalApps\]/);
+  assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector", \.\.\.sharedOptionalApps\]/);
+  assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker", \.\.\.sharedOptionalApps\]/);
+  assert.match(page, /roleCatalogApps\[role\]\.includes\(app\.id\)/);
   assert.match(page, /profiles"\)\.select\("role"\)/);
   assert.match(page, /role === "Manager" && \(view === "Team" \|\| view === "Requests"\)/);
   assert.match(page, /role === "Admin" && view === "Admin"/);
