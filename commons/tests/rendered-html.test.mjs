@@ -45,7 +45,7 @@ test("keeps role defaults separate and enforces authenticated roles", async () =
   assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /roleCatalogApps\[role\]\.includes\(app\.id\)/);
-  assert.match(page, /profiles"\)\.select\("role"\)/);
+  assert.match(page, /profiles"\)\.select\("role, display_name"\)/);
   assert.match(page, /role === "Manager" && \(view === "Team" \|\| view === "Requests"\)/);
   assert.match(page, /role === "Admin" && view === "Admin"/);
   assert.doesNotMatch(page, /Preview role/);
@@ -57,7 +57,7 @@ test("offers tenant-scoped Microsoft organizational sign-in", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /Continue with Microsoft/);
   assert.match(page, /provider: "azure"/);
-  assert.match(page, /scopes: "email"/);
+  assert.match(page, /scopes: "email profile"/);
   assert.match(page, /window\.location\.origin/);
   assert.match(page, /skipBrowserRedirect: true/);
   assert.match(page, /window\.location\.assign\(data\.url\)/);
@@ -65,9 +65,9 @@ test("offers tenant-scoped Microsoft organizational sign-in", async () => {
 
 test("greets each authenticated user with their own account name", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /metadata\.full_name/);
-  assert.match(page, /select\("display_name"\)/);
-  assert.match(page, /nameFromEmail\(user\.email\)/);
-  assert.match(page, /Welcome, \{displayName\}/);
+  assert.match(page, /accountName\(session.user, savedName\)/);
+  assert.match(page, /identity\?\.fullName/);
+  assert.match(page, /displayName=\{identity\?\.greetingName/);
+  assert.doesNotMatch(page, /nameFromEmail|session\.user\.email\?\.split/);
   assert.doesNotMatch(page, /user: "Mariana"|user: "Alex"|user: "Jordan"/);
 });

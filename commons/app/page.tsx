@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { accountName } from "../lib/account-name";
 
 type Role = "Employee" | "Manager" | "Admin";
 type View = "Home" | "Apps" | "Announcements" | "Feed" | "Groups" | "People" | "Jobs" | "Team" | "Requests" | "Admin";
@@ -50,15 +51,6 @@ const roleCopy: Record<Role, { title: string; team: string }> = {
   Admin: { title: "Portal Administrator", team: "All departments" },
 };
 
-function nameFromEmail(email?: string) {
-  const localPart = email?.split("@")[0] ?? "";
-  return localPart
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ") || "there";
-}
-
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
 
 function AppTile({ app, assigned, protectedApp, directory = false, canEdit, onAdd, onRemove }: { app: Application; assigned: boolean; protectedApp: boolean; directory?: boolean; canEdit: boolean; onAdd: (app: Application) => void; onRemove: (app: Application) => void }) {
@@ -73,40 +65,12 @@ function AppTile({ app, assigned, protectedApp, directory = false, canEdit, onAd
   </article>;
 }
 
-function HomeView({ role, assignedIds, canEdit, navigate, onAdd, onRemove }: { role: Role; assignedIds: Set<string>; canEdit: boolean; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void }) {
+function HomeView({ role, displayName, assignedIds, canEdit, navigate, onAdd, onRemove }: { role: Role; displayName: string; assignedIds: Set<string>; canEdit: boolean; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void }) {
   const profile = roleCopy[role];
-  const [displayName, setDisplayName] = useState("there");
   const visibleApps = apps.filter((app) => assignedIds.has(app.id));
 
-  useEffect(() => {
-    let active = true;
-
-    async function loadDisplayName() {
-      if (!supabase) return;
-      const { data: userResult } = await supabase.auth.getUser();
-      const user = userResult.user;
-      if (!user || !active) return;
-
-      const { data: savedProfile } = await supabase
-        .from("profiles")
-        .select("display_name")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (!active) return;
-
-      const metadata = user.user_metadata as Record<string, unknown>;
-      const accountName = [metadata.full_name, metadata.name, metadata.display_name]
-        .find((value) => typeof value === "string" && value.trim()) as string | undefined;
-
-      setDisplayName(accountName?.trim() || savedProfile?.display_name?.trim() || nameFromEmail(user.email));
-    }
-
-    void loadDisplayName();
-    return () => { active = false; };
-  }, []);
-
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>Welcome, {displayName}.<br /><em>Your people and work, together.</em></h1><p>{profile.title} · {profile.team} · 4 new community updates</p></div><div className="welcome-stats"><div><strong>{visibleApps.length}</strong><span>My apps</span></div><div><strong>{role === "Employee" ? "4" : "3"}</strong><span>New stories</span></div></div></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}<br /><em>Your people and work, together.</em></h1><p>{profile.title} · {profile.team} · 4 new community updates</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}</div><div className="welcome-stats"><div><strong>{visibleApps.length}</strong><span>My apps</span></div><div><strong>{role === "Employee" ? "4" : "3"}</strong><span>New stories</span></div></div></section>
     <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My apps & tools</h2></div><button onClick={() => navigate("Apps")}>View directory →</button></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} />)}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add an App</strong><small>Browse the approved directory</small></button></div></section>
       <section className="panel announcement"><p className="kicker">COMPANY UPDATE</p><span className="date">AUG 27</span><h2>H!KINEX Learning Week starts Monday</h2><p>Short daily sessions, practical tools and an open Q&A with department leads.</p><button onClick={() => navigate("Announcements")}>Read update →</button></section>
       <section className="panel feed-card"><div className="section-head"><div><p className="kicker">COMMUNITY</p><h2>From your feed</h2></div><span className="live">● LIVE</span></div><div className="feed-person"><span>AM</span><p><strong>Ava Mitchell</strong><small>Marketing · 18 min ago</small></p></div><p>Our new campaign checklist is ready. I added the final launch steps and owner notes.</p><div className="reactions"><button onClick={() => notify("Reaction added for this preview only.")}>👏 12</button><button onClick={() => notify("Comments are illustrative only.")}>3 comments</button></div></section>
@@ -159,6 +123,8 @@ export default function Portal() {
   const [toast, setToast] = useState("");
   const [dark, setDark] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
+  const [savedName, setSavedName] = useState<{ userId: string; name: unknown } | null>(null);
+  const identity = session ? accountName(session.user, savedName) : null;
   const [authReady, setAuthReady] = useState(!supabase);
   const [profileReady, setProfileReady] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
@@ -184,7 +150,7 @@ export default function Portal() {
       setAuthReady(true);
       setProfileReady(false);
       setAuthMessage("");
-      if (!nextSession) setAddedIds([]);
+      if (!nextSession) { setAddedIds([]); setSavedName(null); }
     });
     return () => data.subscription.unsubscribe();
   }, []);
@@ -192,10 +158,11 @@ export default function Portal() {
     if (!session || !supabase) return;
     let current = true;
     Promise.all([
-      supabase.from("profiles").select("role").eq("user_id", session.user.id).maybeSingle(),
+      supabase.from("profiles").select("role, display_name").eq("user_id", session.user.id).maybeSingle(),
       supabase.from("user_app_assignments").select("application_id").eq("user_id", session.user.id).eq("source", "self_added"),
     ]).then(([profileResult, assignmentResult]) => {
       if (!current) return;
+      setSavedName({ userId: session.user.id, name: profileResult.data?.display_name });
       const storedRole = profileResult.data?.role;
       if (profileResult.error || (storedRole !== "employee" && storedRole !== "manager" && storedRole !== "admin")) {
         setAuthMessage("Your account does not have an assigned H!KINEX portal role. Please contact an administrator.");
@@ -241,7 +208,8 @@ export default function Portal() {
     const redirectTo = `${window.location.origin}${window.location.pathname}`;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "azure",
-      options: { scopes: "email", redirectTo, skipBrowserRedirect: true },
+      // The profile scope supplies name claims in Microsoft's verified ID token.
+      options: { scopes: "email profile", redirectTo, skipBrowserRedirect: true },
     });
     if (error) {
       setAuthBusy(false);
@@ -258,5 +226,5 @@ export default function Portal() {
   if (!session) return <main className="auth-page"><section className="auth-card"><Brand /><p className="kicker">SECURE EMPLOYEE ACCESS</p><h1>Welcome to H!KINEX Commons.</h1><p>Sign in with your assigned Employee, Manager, or Admin account. Your account role determines which portal and controls you can access.</p><button className="microsoft microsoft-primary" onClick={signInWithMicrosoft} disabled={authBusy || !isSupabaseConfigured}><span className="microsoft-mark" aria-hidden="true"><i /><i /><i /><i /></span>{authBusy ? "Connecting…" : "Continue with Microsoft"}</button><span className="or">or use your assigned portal credentials</span><label>Email<input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@hikinex.com" /></label><label>Password<input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" onKeyDown={(event) => { if (event.key === "Enter") signIn(); }} /></label>{authMessage && <div className="auth-error" role="alert">{authMessage}</div>}<button className="primary" onClick={signIn} disabled={authBusy || !isSupabaseConfigured}>{authBusy ? "Signing in…" : isSupabaseConfigured ? "Sign in with email" : "Secure access is being connected"}</button><small>Access and roles are managed by H!KINEX.</small></section></main>;
   if (authMessage) return <main className="auth-page"><section className="auth-card"><Brand /><p className="kicker">ACCESS NOT ASSIGNED</p><h1>We couldn’t open your portal.</h1><p>{authMessage}</p><button className="primary" onClick={signOut}>Sign out</button></section></main>;
   const managementAllowed = (role === "Manager" && (view === "Team" || view === "Requests")) || (role === "Admin" && view === "Admin");
-  return <main className={`portal commons ${dark ? "dark" : ""}`}><aside className={menu ? "open" : ""}><Brand /><div className="profile"><span>{session.user.email?.slice(0, 2).toUpperCase() ?? role.slice(0, 2)}</span><div><strong>{session.user.email?.split("@")[0]}</strong><small>{roleCopy[role].title}</small></div></div><nav>{nav.map((item, i) => <button className={view === item ? "active" : ""} onClick={() => { setView(item); setMenu(false); }} key={item}><span>{["⌂", "≋", "◎", "◫", "◉", "▦", "◇", "♙", "✓", "⚙"][i]}</span>{labels[item]}{item === "Requests" && <b>3</b>}</button>)}</nav><footer><strong>H!KINEX Commons</strong><small>{role} access · Secure session</small></footer></aside>{menu && <button className="overlay" aria-label="Close navigation" onClick={() => setMenu(false)} />}<section className="main"><header className="topbar"><button className="menu" onClick={() => setMenu(true)} aria-label="Open navigation">☰</button><label className="global-search">⌕ <input placeholder="Search people, posts and tools" aria-label="Search the Employee Hub" onFocus={() => setView("People")} /></label><span className="role-badge">{role} access</span><button className="theme-toggle" onClick={() => setDark((current) => !current)} aria-label={`Switch to ${dark ? "light" : "dark"} theme`}>{dark ? "☀" : "◐"}</button>{role !== "Employee" && <select aria-label="Department"><option>{role === "Admin" ? "All departments" : "Marketing"}</option><option>H!KINEX</option><option>Sales</option><option>Recruiting</option><option>Marketing</option><option>IT</option><option>DogFoodDev</option></select>}<button className="login-preview" onClick={signOut}>Sign out</button></header><div className="content">{view === "Home" && <HomeView role={role} assignedIds={assignedIds} canEdit={canEdit} navigate={setView} onAdd={addApp} onRemove={removeApp} />}{view === "Apps" && <AppsView role={role} assignedIds={assignedIds} canEdit={canEdit} onAdd={addApp} onRemove={removeApp} />}{view === "Announcements" && <AnnouncementsView role={role} notify={notify} />}{view === "Feed" && <FeedView notify={notify} />}{view === "Groups" && <GroupsView role={role} notify={notify} />}{view === "People" && <PeopleView notify={notify} />}{view === "Jobs" && <JobsView role={role} notify={notify} />}{managementAllowed && <ManagementView role={role} view={view} notify={notify} />}</div></section>{toast && <div className="toast" role="status">{toast}<button onClick={() => setToast("")} aria-label="Dismiss">×</button></div>}</main>;
+return <main className={`portal commons ${dark ? "dark" : ""}`}><aside className={menu ? "open" : ""}><Brand /><div className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{roleCopy[role].title}</small></div></div><nav>{nav.map((item, i) => <button className={view === item ? "active" : ""} onClick={() => { setView(item); setMenu(false); }} key={item}><span>{["⌂", "≋", "◎", "◫", "◉", "▦", "◇", "♙", "✓", "⚙"][i]}</span>{labels[item]}{item === "Requests" && <b>3</b>}</button>)}</nav><footer><strong>H!KINEX Commons</strong><small>{role} access · Secure session</small></footer></aside>{menu && <button className="overlay" aria-label="Close navigation" onClick={() => setMenu(false)} />}<section className="main"><header className="topbar"><button className="menu" onClick={() => setMenu(true)} aria-label="Open navigation">☰</button><label className="global-search">⌕ <input placeholder="Search people, posts and tools" aria-label="Search the Employee Hub" onFocus={() => setView("People")} /></label><span className="role-badge">{role} access</span><button className="theme-toggle" onClick={() => setDark((current) => !current)} aria-label={`Switch to ${dark ? "light" : "dark"} theme`}>{dark ? "☀" : "◐"}</button>{role !== "Employee" && <select aria-label="Department"><option>{role === "Admin" ? "All departments" : "Marketing"}</option><option>H!KINEX</option><option>Sales</option><option>Recruiting</option><option>Marketing</option><option>IT</option><option>DogFoodDev</option></select>}<button className="login-preview" onClick={signOut}>Sign out</button></header><div className="content">{view === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} assignedIds={assignedIds} canEdit={canEdit} navigate={setView} onAdd={addApp} onRemove={removeApp} />}{view === "Apps" && <AppsView role={role} assignedIds={assignedIds} canEdit={canEdit} onAdd={addApp} onRemove={removeApp} />}{view === "Announcements" && <AnnouncementsView role={role} notify={notify} />}{view === "Feed" && <FeedView notify={notify} />}{view === "Groups" && <GroupsView role={role} notify={notify} />}{view === "People" && <PeopleView notify={notify} />}{view === "Jobs" && <JobsView role={role} notify={notify} />}{managementAllowed && <ManagementView role={role} view={view} notify={notify} />}</div></section>{toast && <div className="toast" role="status">{toast}<button onClick={() => setToast("")} aria-label="Dismiss">×</button></div>}</main>;
 }
