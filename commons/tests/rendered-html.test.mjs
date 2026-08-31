@@ -71,3 +71,12 @@ test("greets each authenticated user with their own account name", async () => {
   assert.doesNotMatch(page, /nameFromEmail|session\.user\.email\?\.split/);
   assert.doesNotMatch(page, /user: "Mariana"|user: "Alex"|user: "Jordan"/);
 });
+
+test("signs out the current browser session and always resets portal state", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /signOut\(\{ scope: "local" \}\)/);
+  assert.match(page, /setSession\(null\)/);
+  assert.match(page, /setSavedName\(null\)/);
+  assert.match(page, /setRole\("Employee"\)/);
+  assert.match(page, /setView\("Home"\)/);
+});

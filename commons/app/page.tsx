@@ -220,7 +220,19 @@ export default function Portal() {
     setAuthBusy(false);
     setAuthMessage("Microsoft did not return a sign-in address. Please contact IT so the Azure provider settings can be checked.");
   };
-  const signOut = async () => { if (supabase) await supabase.auth.signOut(); setAddedIds([]); setRole("Employee"); setView("Home"); };
+  const signOut = async () => {
+    setAuthBusy(true);
+    const result = supabase ? await supabase.auth.signOut({ scope: "local" }) : { error: null };
+    setSession(null);
+    setSavedName(null);
+    setAddedIds([]);
+    setRole("Employee");
+    setView("Home");
+    setProfileReady(false);
+    setAuthReady(true);
+    setAuthBusy(false);
+    setAuthMessage(result.error ? "The portal signed you out locally, but could not close the remote session." : "");
+  };
   const labels: Record<View, string> = { Home: "Home", Apps: "Apps & Tools", Announcements: "Announcements", Feed: "Company Feed", Groups: "Groups & Clubs", People: "People", Jobs: "Jobs & Referrals", Team: "My Team", Requests: "Access Requests", Admin: "Admin Console" };
   if (!authReady || (session && !profileReady)) return <main className="auth-page"><section className="auth-card"><Brand /><div className="auth-loading" aria-live="polite">Checking secure access…</div></section></main>;
   if (!session) return <main className="auth-page"><section className="auth-card"><Brand /><p className="kicker">SECURE EMPLOYEE ACCESS</p><h1>Welcome to H!KINEX Commons.</h1><p>Sign in with your assigned Employee, Manager, or Admin account. Your account role determines which portal and controls you can access.</p><button className="microsoft microsoft-primary" onClick={signInWithMicrosoft} disabled={authBusy || !isSupabaseConfigured}><span className="microsoft-mark" aria-hidden="true"><i /><i /><i /><i /></span>{authBusy ? "Connecting…" : "Continue with Microsoft"}</button><span className="or">or use your assigned portal credentials</span><label>Email<input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@hikinex.com" /></label><label>Password<input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" onKeyDown={(event) => { if (event.key === "Enter") signIn(); }} /></label>{authMessage && <div className="auth-error" role="alert">{authMessage}</div>}<button className="primary" onClick={signIn} disabled={authBusy || !isSupabaseConfigured}>{authBusy ? "Signing in…" : isSupabaseConfigured ? "Sign in with email" : "Secure access is being connected"}</button><small>Access and roles are managed by H!KINEX.</small></section></main>;

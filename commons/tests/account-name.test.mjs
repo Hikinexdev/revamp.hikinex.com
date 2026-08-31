@@ -40,3 +40,15 @@ test("handles missing metadata and malformed name fields without guessing", () =
   assert.equal(accountName({ id: "test-two" }).fullName, "");
   assert.equal(accountName(user({ full_name: {}, name: ["Wrong"], display_name: "  " })).fullName, "");
 });
+
+test("labels the three non-Microsoft test accounts without treating usernames as names", () => {
+  for (const [email, name] of [
+    ["testemployee@hikinex.com", "Test Employee"],
+    ["testmanager@hikinex.com", "Test Manager"],
+    ["testadmin@hikinex.com", "Test Admin"],
+  ]) {
+    const result = accountName({ id: email, email }, { userId: email, name: email.split("@")[0] });
+    assert.equal(result.fullName, name);
+    assert.equal(result.greetingName, name);
+  }
+});
