@@ -135,12 +135,7 @@ export default function Portal() {
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(""), 3200); };
   const canEdit = Boolean(session && supabase);
   const assignedIds = useMemo(() => new Set([...roleDefaults[role], ...addedIds]), [role, addedIds]);
-  const nav = useMemo(() => {
-    const base: View[] = ["Home", "Feed", "Groups", "Announcements", "People", "Apps", "Jobs"];
-    if (role === "Manager") base.push("Team", "Requests");
-    if (role === "Admin") base.push("Admin");
-    return base;
-  }, [role]);
+  const nav: View[] = ["Home"];
   useEffect(() => { const key = (event: KeyboardEvent) => { if (event.key === "Escape") setMenu(false); }; window.addEventListener("keydown", key); return () => window.removeEventListener("keydown", key); }, []);
   useEffect(() => {
     if (!supabase) return;
