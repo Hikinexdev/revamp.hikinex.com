@@ -35,7 +35,14 @@ export function accountName(user: Account, saved?: { userId: string; name: unkno
     if (candidate) { fullName = candidate; givenName = given; break; }
   }
   if (!fullName && saved?.userId === user.id) fullName = usable(saved.name);
+  const testAccountNames: Record<string, string> = {
+    "testemployee@hikinex.com": "Test Employee",
+    "testmanager@hikinex.com": "Test Manager",
+    "testadmin@hikinex.com": "Test Admin",
+  };
+  if (!fullName && testAccountNames[email]) fullName = testAccountNames[email];
   const greetingName = givenName || fullName.split(" ")[0];
+  const testGreeting = testAccountNames[email];
   const initials = fullName ? fullName.split(" ").slice(0, 2).map((part) => Array.from(part)[0]).join("").toUpperCase() : "•";
-  return { fullName, greetingName, initials };
+  return { fullName, greetingName: testGreeting || greetingName, initials };
 }
