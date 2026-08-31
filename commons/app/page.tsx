@@ -220,9 +220,7 @@ export default function Portal() {
     setAuthBusy(false);
     setAuthMessage("Microsoft did not return a sign-in address. Please contact IT so the Azure provider settings can be checked.");
   };
-  const signOut = async () => {
-    setAuthBusy(true);
-    const result = supabase ? await supabase.auth.signOut({ scope: "local" }) : { error: null };
+  const signOut = () => {
     setSession(null);
     setSavedName(null);
     setAddedIds([]);
@@ -231,7 +229,12 @@ export default function Portal() {
     setProfileReady(false);
     setAuthReady(true);
     setAuthBusy(false);
-    setAuthMessage(result.error ? "The portal signed you out locally, but could not close the remote session." : "");
+    setAuthMessage("");
+    if (supabase) {
+      void supabase.auth.signOut({ scope: "local" }).then(({ error }) => {
+        if (error) setAuthMessage("You are signed out of the portal, but the remote session could not be closed.");
+      });
+    }
   };
   const labels: Record<View, string> = { Home: "Home", Apps: "Apps & Tools", Announcements: "Announcements", Feed: "Company Feed", Groups: "Groups & Clubs", People: "People", Jobs: "Jobs & Referrals", Team: "My Team", Requests: "Access Requests", Admin: "Admin Console" };
   if (!authReady || (session && !profileReady)) return <main className="auth-page"><section className="auth-card"><Brand /><div className="auth-loading" aria-live="polite">Checking secure access…</div></section></main>;
