@@ -20,3 +20,25 @@
 .auth-page{min-height:100vh;display:grid;place-items:center;padding:28px;background:radial-gradient(circle at 75% 15%,#04E6EA2b,transparent 30%),linear-gradient(135deg,#071F21,#0A2E30 58%,#0B4A4E)}.auth-card{width:min(460px,100%);background:#fff;border:1px solid #ffffff55;border-radius:26px;padding:38px;box-shadow:0 30px 90px #00131588}.auth-card>.brand{margin-bottom:34px}.auth-card h1{font-family:Fraunces,Georgia,serif;font-size:38px;line-height:1.05;letter-spacing:-.035em;margin:10px 0 14px}.auth-card>p:not(.kicker){color:var(--muted);font-size:11px;line-height:1.6}.auth-card label{display:grid;gap:7px;margin:14px 0;font-size:9px;font-weight:800}.auth-card input{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;color:var(--ink)}.auth-card>.primary{width:100%;margin-top:8px;padding:13px}.auth-card>.primary:disabled{cursor:not-allowed;background:#789092}.auth-card>small{display:block;text-align:center;color:var(--muted);font-size:8px;margin-top:16px}.auth-error{border:1px solid #F0C1B2;background:#FFF4F0;color:#9C3F23;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:9px;line-height:1.45}.auth-loading{padding:34px 0 10px;color:var(--muted);font-size:11px}.role-badge{border-radius:999px;background:#DFF7F5;color:#087C80;padding:7px 10px;font-size:8px;font-weight:800;white-space:nowrap}
 .auth-card>.microsoft-primary{width:100%;margin-top:22px;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border-color:#B9CCCA;color:var(--navy);font-weight:800}.auth-card>.microsoft-primary:hover:not(:disabled){border-color:var(--teal);background:#F4FCFB}.auth-card>.microsoft-primary:disabled{cursor:not-allowed;opacity:.65}.microsoft-mark{display:grid;grid-template-columns:repeat(2,7px);grid-template-rows:repeat(2,7px);gap:2px}.microsoft-mark i{display:block;width:7px;height:7px;margin:0}.auth-card>.or{display:block;margin:16px 0 3px;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:600px){.auth-page{padding:16px}.auth-card{padding:28px 22px}.auth-card h1{font-size:32px}.role-badge{display:none}}
+
+/* Signed-in account menu */
+.commons>aside .profile-menu{order:4;margin-left:auto;position:relative}
+.commons>aside .profile-menu>summary{list-style:none}
+.commons>aside .profile-menu>summary::-webkit-details-marker{display:none}
+.commons>aside .profile-menu>.profile{margin:0;min-width:190px;cursor:pointer;user-select:none}
+.commons>aside .profile-menu>.profile>b{margin-left:auto;color:#5F7477;font-size:13px;transition:transform .18s ease}
+.commons>aside .profile-menu[open]>.profile>b{transform:rotate(180deg)}
+.account-menu{position:absolute;right:0;top:calc(100% + 10px);z-index:80;width:235px;padding:7px;background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 18px 45px rgba(10,46,48,.16)}
+.account-menu button{width:100%;display:flex;align-items:center;gap:11px;border:0;border-radius:10px;background:transparent;color:var(--ink);padding:11px;text-align:left}
+.account-menu button:hover,.account-menu button:focus-visible{background:var(--soft);outline:none}
+.account-menu button>span:first-child{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--soft);color:#00878B;font-size:14px}
+.account-menu button strong,.account-menu button small{display:block}
+.account-menu button strong{font-size:10px}
+.account-menu button small{margin-top:3px;color:var(--muted);font-size:8px}
+.account-menu .account-signout{color:#A84326}
+.account-menu .account-signout>span:first-child{background:#FFF0EA;color:#B64E2C}
+.commons.dark .account-menu{background:#0D3033;border-color:var(--line)}
+.commons.dark .account-menu button{color:var(--ink)}
+.commons.dark .account-menu button:hover,.commons.dark .account-menu button:focus-visible{background:#123C3F}
+@media(max-width:1100px) and (min-width:761px){.commons>aside .profile-menu{display:none}}
+@media(max-width:760px){.commons>aside .profile-menu{display:block;order:0;margin:24px 0 18px}.commons>aside .profile-menu>.profile{display:flex;margin:0}.account-menu{position:static;width:100%;margin-top:8px;box-shadow:none}}

@@ -35,6 +35,23 @@ test("keeps the primary tab bar focused on Home", async () => {
   assert.doesNotMatch(page, /base\.push\("Team", "Requests"\)|base\.push\("Admin"\)/);
 });
 
+test("places the signed-in role chip before the search bar", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const roleChip = page.indexOf('<span className="role-badge">');
+  const searchBar = page.indexOf('<label className="global-search">');
+  assert.ok(roleChip >= 0 && searchBar >= 0 && roleChip < searchBar);
+});
+
+test("groups appearance and sign-out actions inside the signed-in profile menu", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /<details className="profile-menu">/);
+  assert.match(page, /<summary className="profile">/);
+  assert.match(page, />\{dark \? "Light mode" : "Dark mode"\}</);
+  assert.match(page, /className="account-signout" onClick=\{signOut\}/);
+  assert.doesNotMatch(page, /className="theme-toggle"/);
+  assert.doesNotMatch(page, /className="login-preview"/);
+});
+
 test("uses the approved app catalog and immediate Add an App language", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   for (const application of ["Mission Control", "TimeKeeper", "REET", "TalentDirector", "InvSync", "SoftwareTracker", "RegEv · ATS", "DFD TimeKeeper"]) assert.match(page, new RegExp(application));
