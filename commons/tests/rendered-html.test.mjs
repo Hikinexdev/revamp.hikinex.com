@@ -75,6 +75,7 @@ test("greets each authenticated user with their own account name", async () => {
 test("signs out the current browser session and always resets portal state", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /signOut\(\{ scope: "local" \}\)/);
+  assert.match(page, /setSession\(null\)[\s\S]*void supabase\.auth\.signOut/);
   assert.match(page, /setSession\(null\)/);
   assert.match(page, /setSavedName\(null\)/);
   assert.match(page, /setRole\("Employee"\)/);
