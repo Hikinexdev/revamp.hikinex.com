@@ -28,6 +28,13 @@ test("keeps role navigation, official departments and safe actions", async () =>
   assert.match(page, /illustrative|prototype/i);
 });
 
+test("keeps the primary tab bar focused on Home", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /const nav: View\[\] = \["Home"\]/);
+  assert.doesNotMatch(page, /base: View\[\].*"Feed"/);
+  assert.doesNotMatch(page, /base\.push\("Team", "Requests"\)|base\.push\("Admin"\)/);
+});
+
 test("uses the approved app catalog and immediate Add an App language", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   for (const application of ["Mission Control", "TimeKeeper", "REET", "TalentDirector", "InvSync", "SoftwareTracker", "RegEv · ATS", "DFD TimeKeeper"]) assert.match(page, new RegExp(application));
