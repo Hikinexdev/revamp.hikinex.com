@@ -51,6 +51,57 @@ const roleCopy: Record<Role, { title: string; team: string }> = {
   Admin: { title: "Portal Administrator", team: "All departments" },
 };
 
+const dailyQuotes = [
+  { text: "Love is a productive orientation.", author: "Erich Fromm" },
+  { text: "Optimism is a duty.", author: "Karl Popper" },
+  { text: "In the midst of winter, I found there was, within me, an invincible summer.", author: "Albert Camus" },
+  { text: "Nothing great was ever achieved without enthusiasm.", author: "Ralph Waldo Emerson" },
+  { text: "Optimism is the faith that leads to achievement.", author: "Helen Keller" },
+  { text: "No great thing is created suddenly.", author: "Epictetus" },
+  { text: "The universe is change; our life is what our thoughts make it.", author: "Marcus Aurelius" },
+  { text: "We suffer more often in imagination than in reality.", author: "Seneca" },
+  { text: "The beginning is the most important part of the work.", author: "Plato" },
+  { text: "Hope is a waking dream.", author: "Aristotle" },
+  { text: "The good life is one inspired by love and guided by knowledge.", author: "Bertrand Russell" },
+  { text: "The beginning is always today.", author: "Mary Wollstonecraft" },
+  { text: "Act as if what you do makes a difference. It does.", author: "William James" },
+  { text: "We are all in the gutter, but some of us are looking at the stars.", author: "Oscar Wilde" },
+  { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
+  { text: "Have courage to use your own reason.", author: "Immanuel Kant" },
+  { text: "The future enters into us, in order to transform itself in us, long before it happens.", author: "Rainer Maria Rilke" },
+  { text: "Life can only be understood backwards; but it must be lived forwards.", author: "Søren Kierkegaard" },
+  { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
+  { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Forever is composed of nows.", author: "Emily Dickinson" },
+  { text: "The most effective way to do it, is to do it.", author: "Amelia Earhart" },
+  { text: "One must imagine Sisyphus happy.", author: "Albert Camus" },
+] as const;
+
+function dailyQuoteIndex(date = new Date()) {
+  const localCalendarDay = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  return Math.floor(localCalendarDay / 86_400_000) % dailyQuotes.length;
+}
+
+function DailyQuote() {
+  const [quoteIndex, setQuoteIndex] = useState(() => dailyQuoteIndex());
+  useEffect(() => {
+    let timer = 0;
+    const scheduleNextQuote = () => {
+      const now = new Date();
+      const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      timer = window.setTimeout(() => {
+        setQuoteIndex(dailyQuoteIndex());
+        scheduleNextQuote();
+      }, nextDay.getTime() - now.getTime() + 1_000);
+    };
+    scheduleNextQuote();
+    return () => window.clearTimeout(timer);
+  }, []);
+  const quote = dailyQuotes[quoteIndex];
+  return <blockquote className="daily-quote"><span>DAILY THOUGHT</span><p>“{quote.text}”</p><cite>— {quote.author}</cite></blockquote>;
+}
+
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
 
 function AppTile({ app, assigned, protectedApp, directory = false, canEdit, pinned = false, onAdd, onRemove, onTogglePin }: { app: Application; assigned: boolean; protectedApp: boolean; directory?: boolean; canEdit: boolean; pinned?: boolean; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin?: (app: Application) => void }) {
@@ -71,7 +122,7 @@ function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, navigate
   const visibleApps = apps.filter((app) => assignedIds.has(app.id) && pinnedIds.has(app.id));
 
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}</div><div className="microsoft-shortcuts welcome-microsoft" aria-label="Microsoft apps"><a href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span>Outlook</span></a><a className="office-apps" href="https://www.microsoft365.com/apps" target="_blank" rel="noopener noreferrer" aria-label="Open all Microsoft 365 apps"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h4v4H2V2Zm6 0h4v4H8V2Zm6 0h4v4h-4V2ZM2 8h4v4H2V8Zm6 0h4v4H8V8Zm6 0h4v4h-4V8ZM2 14h4v4H2v-4Zm6 0h4v4H8v-4Zm6 0h4v4h-4v-4Z" /></svg></a></div></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><div className="microsoft-shortcuts welcome-microsoft" aria-label="Microsoft apps"><a href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span>Outlook</span></a><a className="office-apps" href="https://www.microsoft365.com/apps" target="_blank" rel="noopener noreferrer" aria-label="Open all Microsoft 365 apps"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h4v4H2V2Zm6 0h4v4H8V2Zm6 0h4v4h-4V2ZM2 8h4v4H2V8Zm6 0h4v4H8V8Zm6 0h4v4h-4V8ZM2 14h4v4H2v-4Zm6 0h4v4H8v-4Zm6 0h4v4h-4v-4Z" /></svg></a></div></section>
     <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My pinned apps</h2><small className="section-hint">Only pinned apps appear here. Use the directory to pin another app.</small></div><button onClick={() => navigate("Apps")}>View directory →</button></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} pinned canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}{visibleApps.length === 0 && <div className="empty-pins"><strong>No pinned apps yet</strong><small>Open the directory and select the pin beside an app.</small></div>}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add or pin an App</strong><small>Browse the approved directory</small></button></div></section>
       <section className="panel announcement"><p className="kicker">COMPANY UPDATE</p><span className="date">AUG 27</span><h2>H!KINEX Learning Week starts Monday</h2><p>Short daily sessions, practical tools and an open Q&A with department leads.</p><button onClick={() => navigate("Announcements")}>Read update →</button></section>
       <section className="panel feed-card"><div className="section-head"><div><p className="kicker">COMMUNITY</p><h2>From your feed</h2></div><span className="live">● LIVE</span></div><div className="feed-person"><span>AM</span><p><strong>Ava Mitchell</strong><small>Marketing · 18 min ago</small></p></div><p>Our new campaign checklist is ready. I added the final launch steps and owner notes.</p><div className="reactions"><button onClick={() => notify("Reaction added for this preview only.")}>👏 12</button><button onClick={() => notify("Comments are illustrative only.")}>3 comments</button></div></section>

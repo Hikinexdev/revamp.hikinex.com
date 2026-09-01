@@ -114,6 +114,16 @@ test("greets each authenticated user with their own account name", async () => {
   assert.doesNotMatch(page, /user: "Mariana"|user: "Alex"|user: "Jordan"/);
 });
 
+test("rotates an attributed daily thought automatically every calendar day", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  for (const author of ["Erich Fromm", "Karl Popper", "Albert Camus", "Marcus Aurelius"]) assert.match(page, new RegExp(author));
+  assert.match(page, /function dailyQuoteIndex/);
+  assert.match(page, /86_400_000/);
+  assert.match(page, /new Date\(now\.getFullYear\(\), now\.getMonth\(\), now\.getDate\(\) \+ 1\)/);
+  assert.match(page, /window\.setTimeout/);
+  assert.match(page, /<DailyQuote \/>/);
+});
+
 test("signs out the current browser session and always resets portal state", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /signOut\(\{ scope: "local" \}\)/);
