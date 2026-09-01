@@ -87,7 +87,7 @@ test("keeps role defaults separate and enforces authenticated roles", async () =
   assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /roleCatalogApps\[role\]\.includes\(app\.id\)/);
-  assert.match(page, /profiles"\)\.select\("role, display_name"\)/);
+  assert.match(page, /profiles"\)\.select\("role, display_name, department"\)/);
   assert.match(page, /role === "Manager" && \(view === "Team" \|\| view === "Requests"\)/);
   assert.match(page, /role === "Admin" && view === "Admin"/);
   assert.doesNotMatch(page, /Preview role/);
@@ -135,6 +135,19 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.doesNotMatch(page, /QUICK ACTIONS/);
   assert.doesNotMatch(page, /Add or pin an App/);
   assert.match(page, /Add or pin App →/);
+});
+
+test("loads and publishes real role-scoped company updates through Supabase", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const migration = await readFile(new URL("../../supabase/migrations/202609010002_company_updates.sql", import.meta.url), "utf8");
+  assert.match(page, /from\("company_updates"\)\.select/);
+  assert.match(page, /from\("company_updates"\)\.insert/);
+  assert.match(page, /latestUpdate=\{companyUpdates\[0\]/);
+  assert.match(page, /Publish update/);
+  assert.doesNotMatch(page, /Announcement composer opened in safe preview mode/);
+  assert.match(migration, /create table if not exists public\.company_updates/);
+  assert.match(migration, /employees read visible company updates/);
+  assert.match(migration, /admins and managers publish updates/);
 });
 
 test("signs out the current browser session and always resets portal state", async () => {
