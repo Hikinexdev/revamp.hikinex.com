@@ -57,7 +57,7 @@ function AppTile({ app, assigned, protectedApp, directory = false, canEdit, pinn
   return <article className={`app-tile ${assigned ? "assigned" : ""} ${pinned ? "pinned-app" : ""}`}>
     <span className="app-icon">{app.icon}</span><span className="app-copy"><strong>{app.name}</strong><small>{app.description}</small></span>
     <div className="app-actions">
-      {!directory && onTogglePin && <button className="pin-app" onClick={() => onTogglePin(app)} disabled={!canEdit} aria-pressed={pinned} aria-label={`${pinned ? "Unpin" : "Pin"} ${app.name} on the dashboard`} title={pinned ? "Unpin from dashboard" : "Pin to dashboard"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 9V4l1-1V2H7v1l1 1v5c0 1.66-1.34 3-3 3v2h6v7l1 1 1-1v-7h6v-2c-1.66 0-3-1.34-3-3Z" /></svg></button>}
+      {!directory && onTogglePin && <button className="pin-app" onClick={() => onTogglePin(app)} disabled={!canEdit} aria-pressed={pinned} aria-label={`${pinned ? "Unpin" : "Pin"} ${app.name} on the dashboard`} title={pinned ? "Unpin from dashboard" : "Pin to dashboard"}><svg viewBox="0 0 24 24" aria-hidden="true"><path className="pin-body" d="M8 3h8v8l2 3v3H6v-3l2-3V3Z" /><path className="pin-stem" d="M12 17v5" /></svg></button>}
       {assigned && <a href={app.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${app.name} in a new tab`}>Open ↗</a>}
       {directory && !assigned && <button onClick={() => onAdd(app)} disabled={!canEdit}>{canEdit ? "Add app" : "Sign in to add"}</button>}
       {directory && assigned && !protectedApp && <button className="remove-app" onClick={() => onRemove(app)} disabled={!canEdit}>{canEdit ? "Remove" : "Added"}</button>}
