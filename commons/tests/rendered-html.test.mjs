@@ -133,6 +133,7 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
+  assert.doesNotMatch(page, /Add or pin an App/);
 });
 
 test("signs out the current browser session and always resets portal state", async () => {
