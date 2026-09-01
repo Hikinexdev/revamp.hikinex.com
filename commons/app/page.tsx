@@ -110,11 +110,16 @@ function DailyQuote() {
 
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
 
-function AppTile({ app, assigned, protectedApp, directory = false, canEdit, pinned = false, onAdd, onRemove, onTogglePin }: { app: Application; assigned: boolean; protectedApp: boolean; directory?: boolean; canEdit: boolean; pinned?: boolean; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin?: (app: Application) => void }) {
+function PinIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path className="pin-body" d="M8 3h8v8l2 3v3H6v-3l2-3V3Z" /><path className="pin-stem" d="M12 17v5" /></svg>;
+}
+
+function AppTile({ app, assigned, protectedApp, directory = false, canEdit, pinned = false, onAdd, onAddAndPin, onRemove, onTogglePin }: { app: Application; assigned: boolean; protectedApp: boolean; directory?: boolean; canEdit: boolean; pinned?: boolean; onAdd: (app: Application) => void; onAddAndPin?: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin?: (app: Application) => void }) {
   return <article className={`app-tile ${assigned ? "assigned" : ""} ${pinned ? "pinned-app" : ""}`}>
     <span className="app-icon">{app.icon}</span><span className="app-copy"><strong>{app.name}</strong><small>{app.description}</small></span>
     <div className="app-actions">
-      {assigned && onTogglePin && <button className="pin-app" onClick={() => onTogglePin(app)} disabled={!canEdit} aria-pressed={pinned} aria-label={`${pinned ? "Unpin" : "Pin"} ${app.name} on the dashboard`} title={pinned ? "Unpin from dashboard" : "Pin to dashboard"}><svg viewBox="0 0 24 24" aria-hidden="true"><path className="pin-body" d="M8 3h8v8l2 3v3H6v-3l2-3V3Z" /><path className="pin-stem" d="M12 17v5" /></svg></button>}
+      {assigned && onTogglePin && <button className="pin-app" onClick={() => onTogglePin(app)} disabled={!canEdit} aria-pressed={pinned} aria-label={`${pinned ? "Unpin" : "Pin"} ${app.name} on the dashboard`} title={pinned ? "Unpin from dashboard" : "Pin to dashboard"}><PinIcon /></button>}
+      {directory && !assigned && onAddAndPin && <button className="pin-app" onClick={() => onAddAndPin(app)} disabled={!canEdit} aria-pressed="false" aria-label={`Add and pin ${app.name} on the dashboard`} title="Add and pin to dashboard"><PinIcon /></button>}
       {assigned && <a href={app.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${app.name} in a new tab`}>Open ↗</a>}
       {directory && !assigned && <button onClick={() => onAdd(app)} disabled={!canEdit}>{canEdit ? "Add app" : "Sign in to add"}</button>}
       {directory && assigned && !protectedApp && <button className="remove-app" onClick={() => onRemove(app)} disabled={!canEdit}>{canEdit ? "Remove" : "Added"}</button>}
@@ -135,11 +140,16 @@ function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, latestUp
   </>;
 }
 
-function AppsView({ role, assignedIds, pinnedIds, canEdit, onAdd, onRemove, onTogglePin }: { role: Role; assignedIds: Set<string>; pinnedIds: Set<string>; canEdit: boolean; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin: (app: Application) => void }) {
+function AppsView({ role, assignedIds, pinnedIds, canEdit, navigate, onAdd, onAddAndPin, onRemove, onTogglePin }: { role: Role; assignedIds: Set<string>; pinnedIds: Set<string>; canEdit: boolean; navigate: (view: View) => void; onAdd: (app: Application) => void; onAddAndPin: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin: (app: Application) => void }) {
   const [search, setSearch] = useState(""); const [selected, setSelected] = useState("All");
-  const groups = ["All", "H!KINEX", "Sales", "Recruiting", "Marketing", "IT", "DogFoodDev"];
-  const results = apps.filter((app) => roleCatalogApps[role].includes(app.id) && (selected === "All" || app.group === selected) && `${app.name} ${app.description}`.toLowerCase().includes(search.toLowerCase()));
-  return <section><PageHead eyebrow="WORK" title="Add an App" copy={canEdit ? `Choose an application approved for the ${role} role. Assigned applications can be pinned to your dashboard.` : "Explore the approved directory in Review mode. Sign in to save applications to My Apps."} /><div className="directory-tools"><label>⌕ <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search applications" /></label><div>{groups.map((group) => <button className={selected === group ? "active" : ""} onClick={() => setSelected(group)} key={group}>{group}</button>)}</div></div><div className="directory-grid">{results.map((app) => <AppTile key={app.id} app={app} assigned={assignedIds.has(app.id)} protectedApp={roleDefaults[role].includes(app.id)} directory pinned={pinnedIds.has(app.id)} canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}</div>{results.length === 0 && <div className="empty-state"><strong>No applications found</strong><span>Try another name or department.</span></div>}</section>;
+  const catalog = apps.filter((app) => roleCatalogApps[role].includes(app.id));
+  const groups = ["All", ...Array.from(new Set(catalog.map((app) => app.group)))];
+  const results = catalog.filter((app) => (selected === "All" || app.group === selected) && `${app.name} ${app.description} ${app.group}`.toLowerCase().includes(search.toLowerCase()));
+  const pinnedApps = catalog.filter((app) => assignedIds.has(app.id) && pinnedIds.has(app.id));
+  const groupCount = (group: string) => group === "All" ? catalog.length : catalog.filter((app) => app.group === group).length;
+  return <section><PageHead eyebrow="WORK" title="Add an App" copy={canEdit ? `Search the applications approved for the ${role} role. Use the pin to add an app directly to Quick Access.` : "Explore the approved directory in Review mode. Sign in to save applications to Quick Access."} />
+    <section className="directory-quick-access" aria-label="Quick Access"><div><p className="kicker">QUICK ACCESS</p><h2>Your dashboard apps</h2><small>Pinned apps stay available on your dashboard on every signed-in device.</small></div><div className="quick-access-items">{pinnedApps.map((app) => <span key={app.id}><a href={app.url} target="_blank" rel="noopener noreferrer">{app.icon} · {app.name}</a><button onClick={() => onTogglePin(app)} disabled={!canEdit} aria-label={`Remove ${app.name} from Quick Access`}>×</button></span>)}{pinnedApps.length === 0 && <small>No apps pinned yet. Select a pin below to add one.</small>}</div><button className="back-dashboard" onClick={() => navigate("Home")}>View dashboard →</button></section>
+    <div className="directory-tools"><label aria-label="Search apps by name or category">⌕ <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search apps by name or category" /></label><div>{groups.map((group) => <button className={selected === group ? "active" : ""} onClick={() => setSelected(group)} key={group} aria-pressed={selected === group}>{group}<span>{groupCount(group)}</span></button>)}</div></div><div className="directory-grid">{results.map((app) => <AppTile key={app.id} app={app} assigned={assignedIds.has(app.id)} protectedApp={roleDefaults[role].includes(app.id)} directory pinned={pinnedIds.has(app.id)} canEdit={canEdit} onAdd={onAdd} onAddAndPin={onAddAndPin} onRemove={onRemove} onTogglePin={onTogglePin} />)}</div>{results.length === 0 && <div className="empty-state"><strong>No applications found</strong><span>Try another name or category.</span></div>}</section>;
 }
 
 function AnnouncementsView({ role, department, items, onCreate, notify }: { role: Role; department: string; items: CompanyUpdate[]; onCreate: (draft: CompanyUpdateDraft) => Promise<boolean>; notify: (message: string) => void }) {
@@ -277,6 +287,31 @@ export default function Portal() {
     }
     notify(`${app.name} was ${next.includes(app.id) ? "pinned to" : "unpinned from"} your dashboard.`);
   };
+  const addAndPin = async (app: Application) => {
+    if (!session || !supabase || assignedIds.has(app.id)) { if (assignedIds.has(app.id)) await togglePin(app); return; }
+    const previousAdded = addedIds;
+    const previousPins = pinnedIds;
+    const nextAdded = [...new Set([...previousAdded, app.id])];
+    const nextPins = [...new Set([...previousPins, app.id])];
+    setAddedIds(nextAdded);
+    setPinnedIds(nextPins);
+    const { error: assignmentError } = await supabase.from("user_app_assignments").upsert({ user_id: session.user.id, application_id: app.id, source: "self_added" }, { onConflict: "user_id,application_id" });
+    if (assignmentError) {
+      setAddedIds(previousAdded);
+      setPinnedIds(previousPins);
+      notify("We could not add that app. Your dashboard was restored.");
+      return;
+    }
+    const { error: pinError } = await supabase.auth.updateUser({ data: { pinned_apps: nextPins } });
+    if (pinError) {
+      await supabase.from("user_app_assignments").delete().eq("user_id", session.user.id).eq("application_id", app.id).eq("source", "self_added");
+      setAddedIds(previousAdded);
+      setPinnedIds(previousPins);
+      notify("We could not save Quick Access. Your previous dashboard was restored.");
+      return;
+    }
+    notify(`${app.name} was added and pinned to your dashboard.`);
+  };
   const createCompanyUpdate = async (draft: CompanyUpdateDraft) => {
     if (!session || !supabase || role === "Employee") return false;
     const payload = {
@@ -355,7 +390,7 @@ export default function Portal() {
       <header className="topbar"><button className="menu" onClick={() => setMenu(true)} aria-label="Open navigation">☰</button>{role !== "Employee" && <select aria-label="Department" value={department} onChange={(event) => setDepartment(event.target.value)}><option>{role === "Admin" ? "All departments" : department}</option><option>H!KINEX</option><option>Sales</option><option>Recruiting</option><option>Marketing</option><option>IT</option><option>DogFoodDev</option></select>}</header>
       <div className="content">
         {view === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} latestUpdate={companyUpdates[0] ?? null} navigate={setView} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
-        {view === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
+        {view === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} navigate={setView} onAdd={addApp} onAddAndPin={addAndPin} onRemove={removeApp} onTogglePin={togglePin} />}
         {view === "Announcements" && <AnnouncementsView role={role} department={department} items={companyUpdates} onCreate={createCompanyUpdate} notify={notify} />}
         {view === "Feed" && <FeedView notify={notify} />}
         {view === "Groups" && <GroupsView role={role} notify={notify} />}
