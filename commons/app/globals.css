@@ -484,3 +484,212 @@ body{
 @media(prefers-reduced-motion:reduce){
   .commons *{scroll-behavior:auto!important;transition:none!important}
 }
+
+/* Art-directed accents: geometric, optimistic, unmistakably H!KINEX */
+.commons .content{
+  position:relative;
+  isolation:isolate;
+}
+.commons .content:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:10px 8px 20px;
+  pointer-events:none;
+  opacity:.42;
+  background-image:radial-gradient(rgba(10,46,48,.16) .7px,transparent .7px);
+  background-size:18px 18px;
+  mask-image:linear-gradient(to bottom,transparent,black 14%,black 75%,transparent);
+}
+.commons .welcome{
+  background:
+    radial-gradient(circle at 82% 28%,rgba(242,177,153,.32) 0 5.2rem,transparent 5.3rem),
+    radial-gradient(circle at 69% 92%,rgba(225,226,137,.28) 0 8rem,transparent 8.1rem),
+    radial-gradient(circle at 94% 2%,rgba(255,255,255,.82),transparent 20rem),
+    linear-gradient(118deg,#D7F8F3 0%,#F6F8E2 52%,#D8ECFC 100%);
+}
+.commons .welcome h1{
+  position:relative;
+  z-index:1;
+  width:max-content;
+  max-width:100%;
+}
+.commons .welcome h1:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:2%;
+  bottom:2px;
+  width:39%;
+  height:11px;
+  border-radius:100% 12% 92% 20%;
+  background:linear-gradient(90deg,rgba(1,206,209,.25),rgba(74,157,211,.1));
+  transform:rotate(-1.3deg);
+}
+.commons .welcome .kicker:before{
+  content:"";
+  width:6px;
+  height:6px;
+  align-self:center;
+  border-radius:2px 50% 50%;
+  background:linear-gradient(135deg,var(--teal),#4E9FD5);
+  transform:rotate(45deg);
+}
+.daily-quote{
+  overflow:hidden;
+}
+.daily-quote:after{
+  content:"";
+  position:absolute;
+  right:-21px;
+  bottom:-29px;
+  width:74px;
+  height:74px;
+  border:12px solid rgba(1,174,178,.07);
+  border-radius:50%;
+}
+.section-head h2,.commons .panel>h2{
+  font-family:Fraunces,Georgia,serif;
+  font-size:27px;
+  font-weight:650;
+}
+.commons .home-grid>.span-two{
+  position:relative;
+  overflow:hidden;
+}
+.commons .home-grid>.span-two:before{
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  left:-74px;
+  top:-74px;
+  border:14px solid rgba(1,206,209,.08);
+  border-radius:50%;
+}
+.app-tile{
+  position:relative;
+  overflow:hidden;
+}
+.app-tile:after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:18px;
+  width:3px;
+  height:34px;
+  border-radius:0 99px 99px 0;
+  background:#58BEBB;
+  opacity:.55;
+}
+.apps-grid>.app-tile:nth-child(5n+1) .app-icon,.directory-grid>.app-tile:nth-child(5n+1) .app-icon{
+  background:linear-gradient(145deg,#D4F8F4,#E6FBF7);
+  color:#007D81;
+}
+.apps-grid>.app-tile:nth-child(5n+2) .app-icon,.directory-grid>.app-tile:nth-child(5n+2) .app-icon{
+  background:linear-gradient(145deg,#DBEEFD,#EBF5FF);
+  color:#286FA8;
+}
+.apps-grid>.app-tile:nth-child(5n+3) .app-icon,.directory-grid>.app-tile:nth-child(5n+3) .app-icon{
+  background:linear-gradient(145deg,#F8E0D7,#FFF1EB);
+  color:#A9583C;
+}
+.apps-grid>.app-tile:nth-child(5n+4) .app-icon,.directory-grid>.app-tile:nth-child(5n+4) .app-icon{
+  background:linear-gradient(145deg,#EEF1CD,#F8F9E8);
+  color:#737A2D;
+}
+.apps-grid>.app-tile:nth-child(5n) .app-icon,.directory-grid>.app-tile:nth-child(5n) .app-icon{
+  background:linear-gradient(145deg,#E8DFF8,#F4EEFC);
+  color:#6D5598;
+}
+.apps-grid>.app-tile:nth-child(5n+2):after,.directory-grid>.app-tile:nth-child(5n+2):after{background:#659FD0}
+.apps-grid>.app-tile:nth-child(5n+3):after,.directory-grid>.app-tile:nth-child(5n+3):after{background:#D79076}
+.apps-grid>.app-tile:nth-child(5n+4):after,.directory-grid>.app-tile:nth-child(5n+4):after{background:#B7BD67}
+.apps-grid>.app-tile:nth-child(5n):after,.directory-grid>.app-tile:nth-child(5n):after{background:#9A83BD}
+.commons .announcement h2{
+  font-family:Fraunces,Georgia,serif;
+  font-size:29px;
+  letter-spacing:-.025em;
+}
+.commons .home-grid>.announcement:after{
+  width:64px;
+  height:64px;
+  right:27px;
+  top:31px;
+  border-radius:50% 50% 48% 12%;
+  background:linear-gradient(135deg,var(--aqua),#72A4D7 65%,#F0A88F);
+  opacity:.28;
+  transform:rotate(23deg);
+}
+.commons>aside .profile>span{
+  background:linear-gradient(145deg,var(--teal),#66AFDA);
+  box-shadow:0 6px 16px rgba(1,174,178,.2);
+}
+.page-head h1{
+  position:relative;
+  display:inline-block;
+}
+.page-head h1:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:3%;
+  right:-7%;
+  bottom:2px;
+  height:12px;
+  border-radius:90% 20% 85% 14%;
+  background:linear-gradient(90deg,rgba(1,206,209,.22),rgba(95,157,207,.07));
+  transform:rotate(-.8deg);
+}
+.group-art{
+  position:relative;
+  overflow:hidden;
+}
+.group-art:after{
+  content:"";
+  position:absolute;
+  width:86px;
+  height:86px;
+  right:-34px;
+  top:-37px;
+  border:12px solid rgba(255,255,255,.38);
+  border-radius:50%;
+}
+.auth-page{
+  background:
+    radial-gradient(rgba(255,255,255,.14) .7px,transparent .7px),
+    radial-gradient(circle at 78% 16%,rgba(4,230,234,.22),transparent 25rem),
+    radial-gradient(circle at 18% 88%,rgba(69,151,210,.16),transparent 27rem),
+    linear-gradient(135deg,#061F21,#0A3032 58%,#0B4B4E);
+  background-size:20px 20px,auto,auto,auto;
+}
+.auth-card h1{
+  position:relative;
+}
+.auth-card h1:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-2px;
+  bottom:2px;
+  width:52%;
+  height:9px;
+  border-radius:90% 12% 80% 20%;
+  background:rgba(1,206,209,.16);
+  transform:rotate(-1deg);
+}
+.commons.dark .content:before{opacity:.22;background-image:radial-gradient(rgba(207,235,231,.24) .7px,transparent .7px)}
+.commons.dark .welcome{
+  background:
+    radial-gradient(circle at 82% 28%,rgba(202,113,87,.17) 0 5.2rem,transparent 5.3rem),
+    radial-gradient(circle at 69% 92%,rgba(163,167,70,.13) 0 8rem,transparent 8.1rem),
+    radial-gradient(circle at 94% 2%,rgba(58,127,148,.23),transparent 20rem),
+    linear-gradient(120deg,#123E40,#173C37 55%,#183A4B);
+}
+.commons.dark .app-tile:after{opacity:.45}
+@media(max-width:760px){
+  .commons .content:before{inset:0;opacity:.28}
+  .commons .welcome h1{width:auto}
+  .commons .welcome h1:after{height:8px;width:54%}
+  .section-head h2,.commons .panel>h2{font-size:24px}
+}
