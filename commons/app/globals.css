@@ -62,8 +62,8 @@
 .welcome-microsoft a{background:#fff}
 .welcome-microsoft .office-apps{width:38px}
 .daily-quote{max-width:680px;margin:24px 0 0;padding:12px 0 12px 16px;border-left:3px solid #01BFC2}
-.commons .welcome .daily-quote p{margin:0;color:#294F51;font-family:Fraunces,Georgia,serif;font-size:19px;line-height:1.38}
-.daily-quote cite{display:block;margin-top:8px;color:#607A7C;font-size:10px;font-style:normal;font-weight:700}
+.commons .welcome .daily-quote p{margin:0;color:#294F51;font-family:Fraunces,Georgia,serif;font-size:24px;line-height:1.3}
+.daily-quote cite{display:block;margin-top:10px;color:#607A7C;font-size:11px;font-style:normal;font-weight:700}
 .empty-pins{min-height:82px;border:1px dashed #AACAC7;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px;text-align:center;color:var(--muted)}
 .empty-pins strong{font-size:10px;color:var(--ink)}.empty-pins small{font-size:8px}
 .commons.dark>aside .brand-home{color:var(--ink)}
@@ -73,4 +73,4 @@
 .commons.dark .welcome-microsoft{background:#0A2E30aa;border-color:#285054}
 .commons.dark .daily-quote{border-color:var(--aqua)}.commons.dark .welcome .daily-quote p{color:#D7E9E7}.commons.dark .daily-quote cite{color:#9EB9B8}
 .commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
-@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:inline-flex;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:17px}.daily-quote cite{font-size:9px}}
+@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:inline-flex;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
