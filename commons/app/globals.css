@@ -58,11 +58,15 @@
 .outlook-mark{width:23px;height:23px;display:grid;place-items:center;border-radius:6px;background:#1473E6;color:#fff;font-weight:800}
 .microsoft-shortcuts .office-apps{width:36px;justify-content:center;padding:7px}
 .office-apps svg{width:17px;height:17px;fill:#536F71}
+.welcome-microsoft{position:relative;z-index:2;align-self:flex-start;margin-left:auto;padding:8px;background:#ffffffb8;border:1px solid #fff;border-radius:16px;box-shadow:0 12px 28px rgba(10,46,48,.09)}
+.welcome-microsoft a{background:#fff}
+.welcome-microsoft .office-apps{width:38px}
 .empty-pins{min-height:82px;border:1px dashed #AACAC7;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px;text-align:center;color:var(--muted)}
 .empty-pins strong{font-size:10px;color:var(--ink)}.empty-pins small{font-size:8px}
 .commons.dark>aside .brand-home{color:var(--ink)}
 .commons.dark .microsoft-shortcuts a{background:#0D3033;color:var(--ink);border-color:var(--line)}
 .commons.dark .microsoft-shortcuts a:hover,.commons.dark .microsoft-shortcuts a:focus-visible{background:#123C3F;border-color:#4C7779}
 .commons.dark .office-apps svg{fill:#C2D5D4}
+.commons.dark .welcome-microsoft{background:#0A2E30aa;border-color:#285054}
 .commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
-@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}}
+@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:inline-flex;margin:24px 0 0;padding:7px}}

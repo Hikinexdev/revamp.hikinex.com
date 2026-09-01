@@ -40,8 +40,10 @@ test("removes the access chip and global search while keeping Microsoft shortcut
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(page, /<span className="role-badge">/);
   assert.doesNotMatch(page, /<label className="global-search">/);
+  assert.match(page, /className="microsoft-shortcuts welcome-microsoft"/);
   assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
   assert.match(page, /https:\/\/www\.microsoft365\.com\/apps/);
+  assert.doesNotMatch(page, /Your people and work, together/);
 });
 
 test("groups appearance and sign-out actions inside the signed-in profile menu", async () => {
