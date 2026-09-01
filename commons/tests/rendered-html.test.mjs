@@ -55,6 +55,8 @@ test("groups appearance and sign-out actions inside the signed-in profile menu",
 test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /className="pin-app"/);
+  assert.match(page, /<svg viewBox="0 0 24 24" aria-hidden="true">/);
+  assert.doesNotMatch(page, /\{pinned \? "★" : "☆"\}/);
   assert.match(page, /aria-pressed=\{pinned\}/);
   assert.match(page, /pinned_apps: next/);
   assert.match(page, /supabase\.auth\.updateUser/);
