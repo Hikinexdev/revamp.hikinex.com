@@ -70,6 +70,22 @@ test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   assert.match(page, /onTogglePin=\{togglePin\}/);
 });
 
+test("matches the working dashboard with one-step Quick Access controls", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(page, /className="directory-quick-access"/);
+  assert.match(page, /Search apps by name or category/);
+  assert.match(page, /Add and pin .* on the dashboard/);
+  assert.match(page, /const addAndPin = async/);
+  assert.match(page, /user_app_assignments/);
+  assert.match(page, /pinned_apps: nextPins/);
+  assert.match(page, /previous dashboard was restored/);
+  assert.match(page, /roleCatalogApps\[role\]/);
+  assert.match(page, /groupCount\(group\)/);
+  assert.match(styles, /\.directory-quick-access/);
+  assert.match(styles, /\.quick-access-items/);
+});
+
 test("uses the approved app catalog and immediate Add an App language", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   for (const application of ["Mission Control", "TimeKeeper", "REET", "TalentDirector", "InvSync", "SoftwareTracker", "RegEv · ATS", "DFD TimeKeeper"]) assert.match(page, new RegExp(application));
