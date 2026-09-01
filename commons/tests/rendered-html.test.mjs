@@ -52,6 +52,16 @@ test("groups appearance and sign-out actions inside the signed-in profile menu",
   assert.doesNotMatch(page, /className="login-preview"/);
 });
 
+test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /className="pin-app"/);
+  assert.match(page, /aria-pressed=\{pinned\}/);
+  assert.match(page, /pinned_apps: next/);
+  assert.match(page, /supabase\.auth\.updateUser/);
+  assert.match(page, /Number\(pinnedIds\.has\(b\.id\)\) - Number\(pinnedIds\.has\(a\.id\)\)/);
+  assert.match(page, /onTogglePin=\{togglePin\}/);
+});
+
 test("uses the approved app catalog and immediate Add an App language", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   for (const application of ["Mission Control", "TimeKeeper", "REET", "TalentDirector", "InvSync", "SoftwareTracker", "RegEv · ATS", "DFD TimeKeeper"]) assert.match(page, new RegExp(application));
