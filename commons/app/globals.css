@@ -74,3 +74,5 @@
 .commons.dark .daily-quote{border-color:var(--aqua)}.commons.dark .welcome .daily-quote p{color:#D7E9E7}.commons.dark .daily-quote cite{color:#9EB9B8}
 .commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
 @media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:inline-flex;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
+.commons .home-grid{grid-template-columns:1.35fr .65fr;grid-template-areas:"apps announcement";align-items:start}
+@media(max-width:760px){.commons .home-grid{grid-template-columns:1fr;grid-template-areas:"apps" "announcement"}}
