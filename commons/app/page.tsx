@@ -57,11 +57,11 @@ const dailyQuotes = [
   { text: "In the midst of winter, I found there was, within me, an invincible summer.", author: "Albert Camus" },
   { text: "Nothing great was ever achieved without enthusiasm.", author: "Ralph Waldo Emerson" },
   { text: "Optimism is the faith that leads to achievement.", author: "Helen Keller" },
-  { text: "No great thing is created suddenly.", author: "Epictetus" },
-  { text: "The universe is change; our life is what our thoughts make it.", author: "Marcus Aurelius" },
-  { text: "We suffer more often in imagination than in reality.", author: "Seneca" },
-  { text: "The beginning is the most important part of the work.", author: "Plato" },
-  { text: "Hope is a waking dream.", author: "Aristotle" },
+  { text: "No great thing is created suddenly.", author: "Epíktētos" },
+  { text: "The universe is change; our life is what our thoughts make it.", author: "Marcus Aurelius Antoninus" },
+  { text: "We suffer more often in imagination than in reality.", author: "Lucius Annaeus Seneca" },
+  { text: "The beginning is the most important part of the work.", author: "Plátōn" },
+  { text: "Hope is a waking dream.", author: "Aristotélēs" },
   { text: "The good life is one inspired by love and guided by knowledge.", author: "Bertrand Russell" },
   { text: "The beginning is always today.", author: "Mary Wollstonecraft" },
   { text: "Act as if what you do makes a difference. It does.", author: "William James" },
@@ -70,8 +70,8 @@ const dailyQuotes = [
   { text: "Have courage to use your own reason.", author: "Immanuel Kant" },
   { text: "The future enters into us, in order to transform itself in us, long before it happens.", author: "Rainer Maria Rilke" },
   { text: "Life can only be understood backwards; but it must be lived forwards.", author: "Søren Kierkegaard" },
-  { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
-  { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+  { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plútarchos" },
+  { text: "Where there is love there is life.", author: "Mohandas Karamchand Gandhi" },
   { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
   { text: "Forever is composed of nows.", author: "Emily Dickinson" },
   { text: "The most effective way to do it, is to do it.", author: "Amelia Earhart" },
@@ -99,7 +99,7 @@ function DailyQuote() {
     return () => window.clearTimeout(timer);
   }, []);
   const quote = dailyQuotes[quoteIndex];
-  return <blockquote className="daily-quote"><span>DAILY THOUGHT</span><p>“{quote.text}”</p><cite>— {quote.author}</cite></blockquote>;
+  return <blockquote className="daily-quote"><p>“{quote.text}”</p><cite>— {quote.author}</cite></blockquote>;
 }
 
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
