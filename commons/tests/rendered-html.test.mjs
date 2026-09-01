@@ -117,6 +117,8 @@ test("greets each authenticated user with their own account name", async () => {
 test("rotates an attributed daily thought automatically every calendar day", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   for (const author of ["Erich Fromm", "Karl Popper", "Albert Camus", "Marcus Aurelius"]) assert.match(page, new RegExp(author));
+  for (const originalName of ["Epíktētos", "Plátōn", "Aristotélēs", "Plútarchos"]) assert.match(page, new RegExp(originalName));
+  assert.doesNotMatch(page, /DAILY THOUGHT/);
   assert.match(page, /function dailyQuoteIndex/);
   assert.match(page, /86_400_000/);
   assert.match(page, /new Date\(now\.getFullYear\(\), now\.getMonth\(\), now\.getDate\(\) \+ 1\)/);
