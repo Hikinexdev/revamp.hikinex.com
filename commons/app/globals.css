@@ -44,3 +44,25 @@
 .commons.dark .account-menu button:hover,.commons.dark .account-menu button:focus-visible{background:#123C3F}
 @media(max-width:1100px) and (min-width:761px){.commons>aside .profile-menu{display:none}}
 @media(max-width:760px){.commons>aside .profile-menu{display:block;order:0;margin:24px 0 18px}.commons>aside .profile-menu>.profile{display:flex;margin:0}.account-menu{position:static;width:100%;margin-top:8px;box-shadow:none}}
+
+/* Simplified Commons navigation and Microsoft shortcuts */
+.commons>aside{position:sticky}
+.commons>aside .brand-home{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:0;background:transparent;color:var(--ink);padding:6px 10px;z-index:1}
+.commons>aside .brand-home .brand{min-width:0}
+.commons>aside .brand-home:hover .brand,.commons>aside .brand-home:focus-visible .brand{color:#007F83}
+.commons>aside .brand-home:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
+.commons>aside nav{z-index:2}
+.microsoft-shortcuts{margin-left:auto;display:flex;align-items:center;gap:7px}
+.microsoft-shortcuts a{height:36px;display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);padding:6px 9px;text-decoration:none;font-size:9px;font-weight:700}
+.microsoft-shortcuts a:hover,.microsoft-shortcuts a:focus-visible{border-color:#9BCBC8;background:#F1FAF9;outline:none}
+.outlook-mark{width:23px;height:23px;display:grid;place-items:center;border-radius:6px;background:#1473E6;color:#fff;font-weight:800}
+.microsoft-shortcuts .office-apps{width:36px;justify-content:center;padding:7px}
+.office-apps svg{width:17px;height:17px;fill:#536F71}
+.empty-pins{min-height:82px;border:1px dashed #AACAC7;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px;text-align:center;color:var(--muted)}
+.empty-pins strong{font-size:10px;color:var(--ink)}.empty-pins small{font-size:8px}
+.commons.dark>aside .brand-home{color:var(--ink)}
+.commons.dark .microsoft-shortcuts a{background:#0D3033;color:var(--ink);border-color:var(--line)}
+.commons.dark .microsoft-shortcuts a:hover,.commons.dark .microsoft-shortcuts a:focus-visible{background:#123C3F;border-color:#4C7779}
+.commons.dark .office-apps svg{fill:#C2D5D4}
+.commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
+@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}}
