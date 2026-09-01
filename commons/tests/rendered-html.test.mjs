@@ -28,18 +28,20 @@ test("keeps role navigation, official departments and safe actions", async () =>
   assert.match(page, /illustrative|prototype/i);
 });
 
-test("keeps the primary tab bar focused on Home", async () => {
+test("uses the centered brand as Home and gives employees a Company Updates tab", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /const nav: View\[\] = \["Home"\]/);
-  assert.doesNotMatch(page, /base: View\[\].*"Feed"/);
-  assert.doesNotMatch(page, /base\.push\("Team", "Requests"\)|base\.push\("Admin"\)/);
+  assert.match(page, /const nav: View\[\] = role === "Employee" \? \["Announcements"\] : \[\]/);
+  assert.match(page, /Announcements: "Company Updates"/);
+  assert.match(page, /className="brand-home"/);
+  assert.doesNotMatch(page, /const nav: View\[\] = \["Home"\]/);
 });
 
-test("places the signed-in role chip before the search bar", async () => {
+test("removes the access chip and global search while keeping Microsoft shortcuts", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  const roleChip = page.indexOf('<span className="role-badge">');
-  const searchBar = page.indexOf('<label className="global-search">');
-  assert.ok(roleChip >= 0 && searchBar >= 0 && roleChip < searchBar);
+  assert.doesNotMatch(page, /<span className="role-badge">/);
+  assert.doesNotMatch(page, /<label className="global-search">/);
+  assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
+  assert.match(page, /https:\/\/www\.microsoft365\.com\/apps/);
 });
 
 test("groups appearance and sign-out actions inside the signed-in profile menu", async () => {
@@ -60,7 +62,9 @@ test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   assert.match(page, /aria-pressed=\{pinned\}/);
   assert.match(page, /pinned_apps: next/);
   assert.match(page, /supabase\.auth\.updateUser/);
-  assert.match(page, /Number\(pinnedIds\.has\(b\.id\)\) - Number\(pinnedIds\.has\(a\.id\)\)/);
+  assert.match(page, /assignedIds\.has\(app\.id\) && pinnedIds\.has\(app\.id\)/);
+  assert.match(page, /No pinned apps yet/);
+  assert.match(page, /pinnedIds=\{pinnedIdSet\}/);
   assert.match(page, /onTogglePin=\{togglePin\}/);
 });
 
