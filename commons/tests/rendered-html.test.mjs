@@ -126,6 +126,15 @@ test("rotates an attributed daily thought automatically every calendar day", asy
   assert.match(page, /<DailyQuote \/>/);
 });
 
+test("keeps the Home dashboard focused on pinned apps and the company update", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /My pinned apps/);
+  assert.match(page, /className="panel announcement"/);
+  assert.doesNotMatch(page, /className="panel feed-card"/);
+  assert.doesNotMatch(page, /className="panel quick"/);
+  assert.doesNotMatch(page, /QUICK ACTIONS/);
+});
+
 test("signs out the current browser session and always resets portal state", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /signOut\(\{ scope: "local" \}\)/);
