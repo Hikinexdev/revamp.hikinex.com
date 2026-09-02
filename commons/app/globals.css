@@ -885,6 +885,15 @@ body{
 .commons.dark .announcement-top>button,.commons.dark .carousel-footer>button{color:var(--aqua)}
 .commons.dark .carousel-controls button{background:#0D3033;color:var(--aqua);border-color:#3A686A}
 .commons.dark .carousel-controls span{color:#A8C2C1}
+.commons.dark>aside .profile-menu>.profile{
+  background:linear-gradient(135deg,#123C3F,#0D3033);
+  border-color:#3A686A;
+  box-shadow:inset 0 1px rgba(255,255,255,.05),0 8px 22px rgba(0,0,0,.18);
+}
+.commons.dark>aside .profile-menu>.profile strong{color:#F4FFFE}
+.commons.dark>aside .profile-menu>.profile small{color:#B8CECD}
+.commons.dark>aside .profile-menu>.profile>b{color:#8FEAEC}
+.commons.dark>aside .profile-menu>.profile:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
 @media(max-width:760px){
   .portal.commons{display:block}
   .portal.commons>aside,.portal.commons>aside.open{position:fixed;inset:0 auto 0 0;width:280px;height:100vh;flex:none;padding:22px 16px;transform:translateX(-105%);transition:transform .22s ease}
