@@ -137,7 +137,8 @@ function CompanyUpdatesCarousel({ updates, navigate }: { updates: CompanyUpdate[
     return () => window.clearInterval(timer);
   }, [updates.length]);
   const update = updates[index] ?? null;
-  return <section className="panel announcement announcement-carousel" aria-label="Company updates carousel" aria-live="polite"><div className="announcement-top"><p className="kicker">COMPANY UPDATES</p><button onClick={() => navigate("Announcements")}>View all →</button></div>{update ? <><span className="date">{updateDate(update.published_at)}</span><h2>{update.title}</h2><p>{update.summary}</p><div className="carousel-footer"><button onClick={() => navigate("Announcements")}>Read update →</button>{updates.length > 1 && <div className="carousel-controls" aria-label="Choose company update"><button onClick={() => setIndex((current) => (current - 1 + updates.length) % updates.length)} aria-label="Previous company update">←</button><span>{index + 1} / {updates.length}</span><button onClick={() => setIndex((current) => (current + 1) % updates.length)} aria-label="Next company update">→</button></div>}</div></> : <div className="announcement-empty"><h2>No company updates yet</h2><p>Published updates will appear here automatically.</p></div>}</section>;
+  const canRotate = updates.length > 1;
+  return <section className="panel announcement announcement-carousel" aria-label="Company updates carousel" aria-live="polite"><div className="announcement-top"><p className="kicker">COMPANY UPDATES</p><button onClick={() => navigate("Announcements")}>View all →</button></div>{update ? <><span className="date">{updateDate(update.published_at)}</span><h2>{update.title}</h2><p>{update.summary}</p><div className="carousel-footer"><button onClick={() => navigate("Announcements")}>Read update →</button><div className="carousel-controls" aria-label="Choose company update"><button onClick={() => setIndex((current) => (current - 1 + updates.length) % updates.length)} aria-label="Previous company update" disabled={!canRotate}>←</button><span>{index + 1} / {updates.length}</span><button onClick={() => setIndex((current) => (current + 1) % updates.length)} aria-label="Next company update" disabled={!canRotate}>→</button></div></div></> : <div className="announcement-empty"><h2>No company updates yet</h2><p>Published updates will appear here automatically.</p><button onClick={() => navigate("Announcements")}>Open Company Updates →</button></div>}</section>;
 }
 
 function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, updates, navigate, onAdd, onRemove, onTogglePin }: { role: Role; displayName: string; assignedIds: Set<string>; pinnedIds: Set<string>; canEdit: boolean; updates: CompanyUpdate[]; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin: (app: Application) => void }) {
@@ -230,6 +231,14 @@ export default function Portal() {
   const assignedIds = useMemo(() => new Set([...roleDefaults[role], ...addedIds]), [role, addedIds]);
   const pinnedIdSet = useMemo(() => new Set(pinnedIds), [pinnedIds]);
   const nav: View[] = ["Announcements"];
+  const closeNavigationOnMobile = () => { if (window.matchMedia("(max-width: 760px)").matches) setMenu(false); };
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 761px)");
+    const syncNavigation = () => setMenu(desktop.matches);
+    syncNavigation();
+    desktop.addEventListener("change", syncNavigation);
+    return () => desktop.removeEventListener("change", syncNavigation);
+  }, []);
   useEffect(() => { const key = (event: KeyboardEvent) => { if (event.key === "Escape") setMenu(false); }; window.addEventListener("keydown", key); return () => window.removeEventListener("keydown", key); }, []);
   useEffect(() => {
     if (!supabase) return;
@@ -396,8 +405,8 @@ export default function Portal() {
   const managementAllowed = (role === "Manager" && (view === "Team" || view === "Requests")) || (role === "Admin" && view === "Admin");
   return <main className={`portal commons ${dark ? "dark" : ""}`}>
     <aside className={menu ? "open" : ""} aria-label="Portal navigation">
-      <button className="brand-home" onClick={() => { setView("Home"); setMenu(false); }} aria-label="Open dashboard"><Brand /></button>
-      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { setView(item); setMenu(false); }} key={item}><span aria-hidden="true">◫</span><span className="nav-label">{labels[item]}</span></button>)}<a className="side-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span className="nav-label">Outlook</span></a><a className="side-link" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span className="copilot-mark" aria-hidden="true">✦</span><span className="nav-label">Copilot</span></a></nav>
+      <button className="brand-home" onClick={() => { setView("Home"); closeNavigationOnMobile(); }} aria-label="Open dashboard"><Brand /></button>
+      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { setView(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span><span className="nav-label">{labels[item]}</span></button>)}<a className="side-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span className="nav-label">Outlook</span></a><a className="side-link" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span className="copilot-mark" aria-hidden="true">✦</span><span className="nav-label">Copilot</span></a></nav>
       <details className="profile-menu"><summary className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{roleCopy[role].title}</small></div><b aria-hidden="true">⌄</b></summary><div className="account-menu"><button onClick={() => setDark((current) => !current)} aria-pressed={dark}><span aria-hidden="true">{dark ? "☀" : "◐"}</span><span><strong>{dark ? "Light mode" : "Dark mode"}</strong><small>Change portal appearance</small></span></button><button className="account-signout" onClick={signOut}><span aria-hidden="true">↪</span><span><strong>Sign out</strong><small>End this secure session</small></span></button></div></details>
       <footer><strong>H!KINEX Commons</strong><small>Secure session</small></footer>
     </aside>
