@@ -157,8 +157,8 @@ function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, updates,
   const visibleApps = apps.filter((app) => assignedIds.has(app.id) && pinnedIds.has(app.id));
 
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div></section>
-    <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My pinned apps</h2><small className="section-hint">Only pinned apps appear here. Use the directory to pin another app.</small></div><button onClick={() => navigate("Apps")}>Add or pin App →</button></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} pinned canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}{visibleApps.length === 0 && <div className="empty-pins"><strong>No pinned apps yet</strong><small>Open the directory and select the pin beside an app.</small></div>}</div></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><div className="microsoft-shortcuts welcome-microsoft" aria-label="Microsoft apps"><a href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span>Outlook</span></a><a className="office-apps" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span aria-hidden="true">✦</span><span>Copilot</span></a></div></section>
+    <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My pinned apps</h2><small className="section-hint">Only pinned apps appear here. Use the directory to pin another app.</small></div></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} pinned canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add or pin an App</strong><small>Browse the approved directory</small></button></div></section>
       <CompanyUpdatesCarousel updates={updates} navigate={navigate} />
     </div>
   </>;
@@ -252,13 +252,6 @@ export default function Portal() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const closeNavigationOnMobile = () => { if (window.matchMedia("(max-width: 760px)").matches) setMenu(false); };
-  useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 761px)");
-    const syncNavigation = () => setMenu(desktop.matches);
-    syncNavigation();
-    desktop.addEventListener("change", syncNavigation);
-    return () => desktop.removeEventListener("change", syncNavigation);
-  }, []);
   useEffect(() => {
     const restoreView = () => setView(viewFromLocation());
     restoreView();
@@ -432,7 +425,7 @@ export default function Portal() {
   return <main className={`portal commons ${dark ? "dark" : ""}`}>
     <aside className={menu ? "open" : ""} aria-label="Portal navigation">
       <button className="brand-home" onClick={() => { navigate("Home"); closeNavigationOnMobile(); }} aria-label="Open dashboard"><Brand /></button>
-      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { navigate(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span><span className="nav-label">{labels[item]}</span></button>)}<a className="side-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span className="nav-label">Outlook</span></a><a className="side-link" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span className="copilot-mark" aria-hidden="true">✦</span><span className="nav-label">Copilot</span></a></nav>
+      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { navigate(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span>{labels[item]}</button>)}</nav>
       <details className="profile-menu"><summary className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{roleCopy[role].title}</small></div><b aria-hidden="true">⌄</b></summary><div className="account-menu"><button onClick={() => setDark((current) => !current)} aria-pressed={dark}><span aria-hidden="true">{dark ? "☀" : "◐"}</span><span><strong>{dark ? "Light mode" : "Dark mode"}</strong><small>Change portal appearance</small></span></button><button className="account-signout" onClick={signOut}><span aria-hidden="true">↪</span><span><strong>Sign out</strong><small>End this secure session</small></span></button></div></details>
       <footer><strong>H!KINEX Commons</strong><small>Secure session</small></footer>
     </aside>
