@@ -74,6 +74,8 @@ test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   assert.match(page, /onTogglePin=\{togglePin\}/);
   assert.match(page, /essentialDashboardApps = \["mission-control", "timekeeper", "lms"\]/);
   assert.match(page, /dashboard_defaults_seeded/);
+  assert.match(page, /dashboardDefaultsVersion = 2/);
+  assert.match(page, /dashboard_defaults_version === dashboardDefaultsVersion/);
   assert.match(page, /\.\.\.essentialDashboardApps, \.\.\.validSavedPins/);
 });
 
