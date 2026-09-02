@@ -28,21 +28,25 @@ test("keeps role navigation, official departments and safe actions", async () =>
   assert.match(page, /illustrative|prototype/i);
 });
 
-test("uses the centered brand as Home and gives employees a Company Updates tab", async () => {
+test("uses the brand as Home and gives every role a Company Updates tab", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /const nav: View\[\] = role === "Employee" \? \["Announcements"\] : \[\]/);
+  assert.match(page, /const nav: View\[\] = \["Announcements"\]/);
   assert.match(page, /Announcements: "Company Updates"/);
   assert.match(page, /className="brand-home"/);
   assert.doesNotMatch(page, /const nav: View\[\] = \["Home"\]/);
 });
 
-test("removes the access chip and global search while keeping Microsoft shortcuts", async () => {
+test("consolidates Company Updates, Outlook and Copilot inside the side menu", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.doesNotMatch(page, /<span className="role-badge">/);
   assert.doesNotMatch(page, /<label className="global-search">/);
-  assert.match(page, /className="microsoft-shortcuts welcome-microsoft"/);
+  assert.doesNotMatch(page, /className="microsoft-shortcuts welcome-microsoft"/);
   assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
-  assert.match(page, /https:\/\/www\.microsoft365\.com\/apps/);
+  assert.match(page, /https:\/\/m365\.cloud\.microsoft\/chat\//);
+  assert.match(page, /aria-label="Portal navigation"/);
+  assert.match(page, /aria-expanded=\{menu\}/);
+  assert.match(styles, /\.commons>aside\.open\{width:250px/);
   assert.doesNotMatch(page, /Your people and work, together/);
 });
 
@@ -68,6 +72,9 @@ test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   assert.match(page, /No pinned apps yet/);
   assert.match(page, /pinnedIds=\{pinnedIdSet\}/);
   assert.match(page, /onTogglePin=\{togglePin\}/);
+  assert.match(page, /essentialDashboardApps = \["mission-control", "timekeeper", "lms"\]/);
+  assert.match(page, /dashboard_defaults_seeded/);
+  assert.match(page, /\.\.\.essentialDashboardApps, \.\.\.validSavedPins/);
 });
 
 test("matches the working dashboard with one-step Quick Access controls", async () => {
@@ -144,8 +151,18 @@ test("rotates an attributed daily thought automatically every calendar day", asy
 
 test("keeps the Home dashboard focused on pinned apps and the company update", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.match(page, /My pinned apps/);
-  assert.match(page, /className="panel announcement"/);
+  assert.match(page, /function CompanyUpdatesCarousel/);
+  assert.match(page, /announcement-carousel/);
+  assert.match(page, /View all →/);
+  assert.match(page, /Previous company update/);
+  assert.match(page, /Next company update/);
+  assert.match(page, /setInterval/);
+  assert.match(page, /className="app-card-link"/);
+  assert.doesNotMatch(page, />Open ↗</);
+  assert.match(styles, /min-height:190px/);
+  assert.match(styles, /\.commons\.dark \.section-head h2.*color:#E8F5F3!important/);
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
@@ -158,7 +175,7 @@ test("loads and publishes real role-scoped company updates through Supabase", as
   const migration = await readFile(new URL("../../supabase/migrations/202609010002_company_updates.sql", import.meta.url), "utf8");
   assert.match(page, /from\("company_updates"\)\.select/);
   assert.match(page, /from\("company_updates"\)\.insert/);
-  assert.match(page, /latestUpdate=\{companyUpdates\[0\]/);
+  assert.match(page, /updates=\{companyUpdates\}/);
   assert.match(page, /Publish update/);
   assert.doesNotMatch(page, /Announcement composer opened in safe preview mode/);
   assert.match(migration, /create table if not exists public\.company_updates/);
