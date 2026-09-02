@@ -254,7 +254,15 @@ export default function Portal() {
   const closeNavigationOnMobile = () => { if (window.matchMedia("(max-width: 760px)").matches) setMenu(false); };
   useEffect(() => {
     const restoreView = () => setView(viewFromLocation());
-    restoreView();
+    const initialView = viewFromLocation();
+    if (initialView !== "Home" && !window.history.state?.portalView) {
+      const sectionUrl = new URL(window.location.href);
+      const homeUrl = new URL(sectionUrl);
+      homeUrl.searchParams.delete("view");
+      window.history.replaceState({ portalView: "Home" }, "", homeUrl);
+      window.history.pushState({ portalView: initialView }, "", sectionUrl);
+    }
+    setView(initialView);
     window.addEventListener("popstate", restoreView);
     return () => window.removeEventListener("popstate", restoreView);
   }, []);
