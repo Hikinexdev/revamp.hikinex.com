@@ -55,12 +55,10 @@
 .microsoft-shortcuts{margin-left:auto;display:flex;align-items:center;gap:7px}
 .microsoft-shortcuts a{height:36px;display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);padding:6px 9px;text-decoration:none;font-size:9px;font-weight:700}
 .microsoft-shortcuts a:hover,.microsoft-shortcuts a:focus-visible{border-color:#9BCBC8;background:#F1FAF9;outline:none}
-.outlook-mark{width:23px;height:23px;display:grid;place-items:center;border-radius:6px;background:#1473E6;color:#fff;font-weight:800}
-.microsoft-shortcuts .office-apps{width:36px;justify-content:center;padding:7px}
-.office-apps svg{width:17px;height:17px;fill:#536F71}
-.welcome-microsoft{position:relative;z-index:2;align-self:flex-start;margin-left:auto;padding:8px;background:#ffffffb8;border:1px solid #fff;border-radius:16px;box-shadow:0 12px 28px rgba(10,46,48,.09)}
+.microsoft-app-mark{width:23px;height:23px;display:grid;place-items:center;border-radius:6px;color:#fff;font-weight:800}
+.outlook-mark{background:#1473E6}.teams-mark{background:#6264A7}.onedrive-mark{background:#0078D4}.word-mark{background:#185ABD}.excel-mark{background:#107C41}.powerpoint-mark{background:#C43E1C}
+.welcome-microsoft{position:relative;z-index:2;align-self:flex-start;margin-left:auto;padding:8px;background:#ffffffb8;border:1px solid #fff;border-radius:16px;box-shadow:0 12px 28px rgba(10,46,48,.09);display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));width:min(248px,100%)}
 .welcome-microsoft a{background:#fff}
-.welcome-microsoft .office-apps{width:38px}
 .daily-quote{max-width:680px;margin:24px 0 0;padding:12px 0 12px 16px;border-left:3px solid #01BFC2}
 .commons .welcome .daily-quote p{margin:0;color:#294F51;font-family:Fraunces,Georgia,serif;font-size:24px;line-height:1.3}
 .daily-quote cite{display:block;margin-top:10px;color:#607A7C;font-size:11px;font-style:normal;font-weight:700}
@@ -73,7 +71,7 @@
 .commons.dark .welcome-microsoft{background:#0A2E30aa;border-color:#285054}
 .commons.dark .daily-quote{border-color:var(--aqua)}.commons.dark .welcome .daily-quote p{color:#D7E9E7}.commons.dark .daily-quote cite{color:#9EB9B8}
 .commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
-@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:inline-flex;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
+@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:grid;grid-template-columns:repeat(6,36px);width:auto;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
 .commons .home-grid{grid-template-columns:1.35fr .65fr;grid-template-areas:"apps announcement";align-items:start}
 @media(max-width:760px){.commons .home-grid{grid-template-columns:1fr;grid-template-areas:"apps" "announcement"}}
 
