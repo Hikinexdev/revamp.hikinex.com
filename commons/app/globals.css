@@ -872,6 +872,7 @@ body{
 .commons .home-grid>.announcement h2{color:var(--ink)}
 .commons .home-grid>.announcement>p:not(.kicker){color:#536F71}
 .commons.dark .section-head h2,.commons.dark .panel h2,.commons.dark .section-hint{color:#E8F5F3!important}
+.commons.dark .home-grid>.span-two{background:linear-gradient(145deg,#0D3033,#123C3F);border-color:var(--line)}
 .commons.dark>aside nav button,.commons.dark>aside nav .side-link{color:#BCD0CF}
 .commons.dark>aside nav button:hover,.commons.dark>aside nav button.active,.commons.dark>aside nav .side-link:hover,.commons.dark>aside nav .side-link:focus-visible{border-color:#315C5E;background:#123C3F;color:#fff}
 .commons.dark>aside nav button>span:first-child{background:#123C3F;color:var(--aqua)}
