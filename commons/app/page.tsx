@@ -34,6 +34,7 @@ const apps: Application[] = [
 
 const employeeDefaults = ["mission-control", "timekeeper", "lms", "vaultwarden", "hiki-it-portal", "hubspot"];
 const essentialDashboardApps = ["mission-control", "timekeeper", "lms"];
+const dashboardDefaultsVersion = 2;
 const roleDefaults: Record<Role, string[]> = {
   Employee: employeeDefaults,
   Manager: [...employeeDefaults, "reet", "talentdirector"],
@@ -276,10 +277,10 @@ export default function Portal() {
       if (!updatesResult.error) setCompanyUpdates((updatesResult.data ?? []) as CompanyUpdate[]);
       const savedPins = session.user.user_metadata?.pinned_apps;
       const validSavedPins = Array.isArray(savedPins) ? savedPins.filter((id): id is string => typeof id === "string" && apps.some((app) => app.id === id)) : [];
-      const defaultsSeeded = session.user.user_metadata?.dashboard_defaults_seeded === true;
+      const defaultsSeeded = session.user.user_metadata?.dashboard_defaults_version === dashboardDefaultsVersion;
       const initialPins = defaultsSeeded ? validSavedPins : [...new Set([...essentialDashboardApps, ...validSavedPins])];
       setPinnedIds(initialPins);
-      if (!defaultsSeeded) void supabase.auth.updateUser({ data: { pinned_apps: initialPins, dashboard_defaults_seeded: true } });
+      if (!defaultsSeeded) void supabase.auth.updateUser({ data: { pinned_apps: initialPins, dashboard_defaults_seeded: true, dashboard_defaults_version: dashboardDefaultsVersion } });
       setProfileReady(true);
     });
     return () => { current = false; };
