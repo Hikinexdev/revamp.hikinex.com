@@ -765,126 +765,7 @@ body{
   .composer-footer .primary{width:100%}
 }
 
-/* September dashboard feedback: consolidated navigation and denser working surface */
-.portal.commons{display:flex;align-items:stretch}
-.commons>aside{
-  position:sticky;
-  inset:auto;
-  top:0;
-  width:78px;
-  height:100vh;
-  flex:0 0 78px;
-  padding:18px 12px;
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
-  gap:20px;
-  overflow:visible;
-  background:rgba(255,255,255,.94);
-  transition:width .22s ease,flex-basis .22s ease;
-}
-.commons>aside.open{width:250px;flex-basis:250px}
-.commons>aside .brand-home{
-  position:static;
-  transform:none;
-  align-self:center;
-  min-height:46px;
-  display:grid;
-  place-items:center;
-  padding:8px;
-}
-.commons>aside .brand-home:hover{transform:none}
-.commons>aside .brand-home .brand{min-width:0;font-size:0;white-space:nowrap}
-.commons>aside .brand-home .brand>span{font-size:19px}
-.commons>aside .brand-home .brand small{display:none}
-.commons>aside.open .brand-home .brand{font-size:19px}
-.commons>aside.open .brand-home .brand>span{font-size:19px}
-.commons>aside.open .brand-home .brand small{display:block}
-.commons>aside nav{display:grid;gap:7px;overflow:visible}
-.commons>aside nav button,.commons>aside nav .side-link{
-  width:100%;
-  min-height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:12px;
-  padding:7px 10px;
-  border:1px solid transparent;
-  border-radius:14px;
-  background:transparent;
-  color:#536F71;
-  text-decoration:none;
-  white-space:nowrap;
-  overflow:hidden;
-  font-size:10px;
-  font-weight:750;
-}
-.commons>aside nav button:hover,.commons>aside nav button.active,.commons>aside nav .side-link:hover,.commons>aside nav .side-link:focus-visible{
-  border-color:#C8E8E5;
-  background:#EAF8F6;
-  color:#007F83;
-  outline:none;
-}
-.commons>aside nav button>span:first-child,.commons>aside nav .side-link>span:first-child{width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:10px;background:#E4F5F3;color:#007F83;font-size:13px}
-.commons>aside nav .side-link .outlook-mark{background:#1473E6;color:#fff;font-weight:800}
-.commons>aside nav .side-link .copilot-mark{background:linear-gradient(145deg,#7A5CE0,#00AEB2);color:#fff;font-size:16px}
-.commons>aside .nav-label{opacity:0;transition:opacity .15s ease}
-.commons>aside.open .nav-label{opacity:1}
-.commons>aside .profile-menu{order:5;margin:auto 0 0;position:relative}
-.commons>aside .profile-menu>.profile{min-width:0;width:100%;margin:0;padding:7px;background:#EFF7F6}
-.commons>aside .profile-menu>.profile>div,.commons>aside .profile-menu>.profile>b{display:none}
-.commons>aside.open .profile-menu>.profile>div,.commons>aside.open .profile-menu>.profile>b{display:block}
-.commons>aside .profile-menu .account-menu{top:auto;right:auto;left:calc(100% + 10px);bottom:0}
-.commons>aside footer{display:none}
-.commons .main{width:calc(100% - 78px);min-width:0}
-.commons .topbar{top:0;height:58px;padding:0 22px;background:rgba(246,250,247,.92);border-bottom:1px solid rgba(10,46,48,.08)}
-.commons .menu{display:grid;width:36px;height:36px;place-items:center;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font-size:16px}
-.commons .content{max-width:1380px;padding-top:20px}
-.commons .welcome{min-height:168px;padding:20px 30px;border-radius:26px}
-.commons .welcome h1{font-size:clamp(34px,3.8vw,48px);line-height:.98}
-.commons .welcome>div:first-child>p:not(.kicker):not(.daily-quote p){margin:9px 0 0}
-.commons .welcome:before{width:220px;height:220px;right:85px;bottom:-145px}
-.commons .welcome:after{width:235px;height:235px;right:-74px;top:-104px}
-.daily-quote{max-width:760px;margin-top:10px;padding:8px 14px 9px 17px;border-radius:0 14px 14px 0}
-.commons .welcome .daily-quote p{font-size:clamp(16px,1.35vw,20px);line-height:1.18}
-.daily-quote cite{margin-top:6px;font-size:9px}
-.app-card-link,.app-card-content{min-width:0;flex:1;display:flex;align-items:center;align-self:stretch;gap:10px;color:var(--ink);text-decoration:none;border-radius:12px}
-.app-card-link:focus-visible{outline:2px solid #67C7C3;outline-offset:3px}
-.app-card-link:hover strong{color:#007F83}
-.app-tile.assigned{cursor:pointer}
-.app-actions{position:relative;z-index:2}
-.announcement-carousel{display:flex;flex-direction:column;min-height:100%}
-.announcement-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.announcement-top .kicker{margin:0}
-.announcement-top>button,.carousel-footer>button{border:0;background:transparent;color:#007F83;font-size:9px;font-weight:800}
-.carousel-footer{position:relative;z-index:2;margin-top:auto;padding-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.carousel-controls{display:flex;align-items:center;gap:7px}
-.carousel-controls button{width:29px;height:29px;border:1px solid #AFDAD6;border-radius:50%;background:#fff;color:#007F83;font-weight:800}
-.carousel-controls button:disabled{cursor:default;opacity:.42}
-.carousel-controls span{min-width:34px;color:#537274;font-size:8px;text-align:center}
-.commons .home-grid>.announcement{
-  color:var(--ink);
-  border-color:#CDE8E3;
-  background:
-    radial-gradient(circle at 102% 0,rgba(93,159,211,.16),transparent 13rem),
-    linear-gradient(128deg,#DDF8F3,#F6F8E2 62%,#DCEFFD);
-}
-.commons .home-grid>.announcement .date{background:#fff;color:#007F83;border-color:#C6E5E1;box-shadow:0 7px 18px rgba(10,46,48,.06)}
-.commons .home-grid>.announcement h2{color:var(--ink)}
-.commons .home-grid>.announcement>p:not(.kicker){color:#536F71}
-.commons.dark .section-head h2,.commons.dark .panel h2,.commons.dark .section-hint{color:#E8F5F3!important}
-.commons.dark .home-grid>.span-two{background:linear-gradient(145deg,#0D3033,#123C3F);border-color:var(--line)}
-.commons.dark>aside nav button,.commons.dark>aside nav .side-link{color:#BCD0CF}
-.commons.dark>aside nav button:hover,.commons.dark>aside nav button.active,.commons.dark>aside nav .side-link:hover,.commons.dark>aside nav .side-link:focus-visible{border-color:#315C5E;background:#123C3F;color:#fff}
-.commons.dark>aside nav button>span:first-child{background:#123C3F;color:var(--aqua)}
-.commons.dark .menu{background:#0D3033;color:var(--ink);border-color:var(--line)}
-.commons.dark .home-grid>.announcement{color:#fff;border-color:#285054;background:radial-gradient(circle at 100% 0,rgba(4,230,234,.16),transparent 13rem),linear-gradient(145deg,#123F42,#173D53)}
-.commons.dark .home-grid>.announcement h2{color:#fff}
-.commons.dark .home-grid>.announcement>p:not(.kicker){color:#BAD0CE}
-.commons.dark .home-grid>.announcement .date{background:#0A2E30;color:var(--aqua);border-color:#285054}
-.commons.dark .announcement-top>button,.commons.dark .carousel-footer>button{color:var(--aqua)}
-.commons.dark .carousel-controls button{background:#0D3033;color:var(--aqua);border-color:#3A686A}
-.commons.dark .carousel-controls span{color:#A8C2C1}
+/* Restored September 1 visual shell with current functional behavior */
 .commons.dark>aside .profile-menu>.profile{
   background:linear-gradient(135deg,#123C3F,#0D3033);
   border-color:#3A686A;
@@ -894,27 +775,13 @@ body{
 .commons.dark>aside .profile-menu>.profile small{color:#B8CECD}
 .commons.dark>aside .profile-menu>.profile>b{color:#8FEAEC}
 .commons.dark>aside .profile-menu>.profile:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
-.commons.dark .welcome .kicker{
-  color:#8FEAEC;
-  border-color:rgba(143,234,236,.32);
-  background:rgba(4,230,234,.09);
-  box-shadow:inset 0 1px rgba(255,255,255,.04);
-}
-@media(max-width:760px){
-  .portal.commons{display:block}
-  .portal.commons>aside,.portal.commons>aside.open{position:fixed;inset:0 auto 0 0;width:280px;height:100vh;flex:none;padding:22px 16px;transform:translateX(-105%);transition:transform .22s ease}
-  .portal.commons>aside.open{transform:translateX(0)}
-  .commons>aside .brand-home .brand,.commons>aside.open .brand-home .brand{font-size:19px}
-  .commons>aside .brand-home .brand>span{font-size:19px}
-  .commons>aside .brand-home .brand small{display:block}
-  .commons>aside .nav-label{opacity:1}
-  .commons>aside .profile-menu{order:5;width:100%;margin:auto 0 0}
-  .commons>aside .profile-menu>.profile>div,.commons>aside .profile-menu>.profile>b{display:block}
-  .commons .main{width:100%;margin:0}
-  .commons .topbar{min-height:58px;padding:9px 13px}
-  .commons .welcome{min-height:230px;padding:22px 20px}
-  .commons .welcome h1{font-size:40px}
-  .daily-quote{margin-top:15px}
-  .commons .welcome .daily-quote p{font-size:19px}
-  .commons .home-grid{grid-template-areas:"apps" "announcement"}
-}
+.commons.dark .welcome .kicker{color:#8FEAEC;border-color:rgba(143,234,236,.32);background:rgba(4,230,234,.09);box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.request-card{min-height:82px;padding:12px;border:1px dashed #78BDB9;background:rgba(248,252,251,.72);border-radius:13px;color:#00878B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.request-card:hover,.request-card:focus-visible{border-color:var(--teal);background:#EAF9F7;outline:none;transform:translateY(-1px)}
+.request-card span{font-size:18px;line-height:1}.request-card strong{font-size:10px}.request-card small{font-size:7px;color:var(--muted)}
+.commons.dark .request-card{background:#0D3033;color:var(--aqua);border-color:#4D8583}
+.commons.dark .request-card:hover,.commons.dark .request-card:focus-visible{background:#123C3F;border-color:var(--aqua)}
+.commons.dark .announcement-top>button,.commons.dark .carousel-footer>button{color:var(--aqua)}
+.commons.dark .carousel-controls button{background:#0D3033;color:var(--aqua);border-color:#3A686A}
+.commons.dark .carousel-controls span{color:#A8C2C1}
+.carousel-controls button:disabled{cursor:default;opacity:.42}
