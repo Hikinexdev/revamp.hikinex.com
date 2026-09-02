@@ -815,6 +815,7 @@ body{
   .commons .welcome .daily-quote p{font-size:clamp(20px,1.55vw,24px)}
   .daily-quote cite{margin-top:7px}
   .commons .home-grid{gap:14px;margin-top:14px}
+  .commons .home-grid .apps-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   .commons .panel{padding:19px;border-radius:23px}
   .section-head{margin-bottom:13px}
   .section-head h2,.commons .panel>h2{font-size:23px}
