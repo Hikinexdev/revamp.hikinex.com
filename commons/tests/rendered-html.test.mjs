@@ -212,4 +212,7 @@ test("creates browser history for internal portal navigation", async () => {
   assert.match(page, /window\.removeEventListener\("popstate", restoreView\)/);
   assert.match(page, /viewFromLocation\(\)/);
   assert.match(page, /navigate=\{navigate\}/);
+  assert.match(page, /initialView !== "Home" && !window\.history\.state\?\.portalView/);
+  assert.match(page, /window\.history\.replaceState\(\{ portalView: "Home" \}/);
+  assert.match(page, /window\.history\.pushState\(\{ portalView: initialView \}/);
 });
