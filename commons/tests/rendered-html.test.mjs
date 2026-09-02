@@ -207,6 +207,7 @@ test("keeps the desktop dashboard compact and dark surfaces consistent", async (
   assert.match(styles, /@media\(min-width:1051px\)/);
   assert.match(styles, /\.commons \.topbar\{display:none\}/);
   assert.match(styles, /\.commons \.welcome\{height:310px;min-height:0/);
+  assert.match(styles, /\.commons \.home-grid \.apps-grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}/);
   assert.match(styles, /\.app-tile,\.request-card\{min-height:78px/);
 });
 
