@@ -172,6 +172,8 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile\{/);
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile strong\{color:#F4FFFE\}/);
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile small\{color:#B8CECD\}/);
+  assert.match(styles, /\.commons\.dark \.welcome \.kicker\{/);
+  assert.match(styles, /color:#8FEAEC/);
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
