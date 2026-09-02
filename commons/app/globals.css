@@ -840,13 +840,13 @@ body{
 .commons .topbar{top:0;height:58px;padding:0 22px;background:rgba(246,250,247,.92);border-bottom:1px solid rgba(10,46,48,.08)}
 .commons .menu{display:grid;width:36px;height:36px;place-items:center;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font-size:16px}
 .commons .content{max-width:1380px;padding-top:20px}
-.commons .welcome{min-height:190px;padding:26px 34px;border-radius:26px}
-.commons .welcome h1{font-size:clamp(38px,4.4vw,54px);line-height:.98}
+.commons .welcome{min-height:168px;padding:20px 30px;border-radius:26px}
+.commons .welcome h1{font-size:clamp(34px,3.8vw,48px);line-height:.98}
 .commons .welcome>div:first-child>p:not(.kicker):not(.daily-quote p){margin:9px 0 0}
 .commons .welcome:before{width:220px;height:220px;right:85px;bottom:-145px}
 .commons .welcome:after{width:235px;height:235px;right:-74px;top:-104px}
-.daily-quote{max-width:720px;margin-top:14px;padding:10px 16px 11px 19px;border-radius:0 14px 14px 0}
-.commons .welcome .daily-quote p{font-size:clamp(17px,1.55vw,22px);line-height:1.2}
+.daily-quote{max-width:760px;margin-top:10px;padding:8px 14px 9px 17px;border-radius:0 14px 14px 0}
+.commons .welcome .daily-quote p{font-size:clamp(16px,1.35vw,20px);line-height:1.18}
 .daily-quote cite{margin-top:6px;font-size:9px}
 .app-card-link,.app-card-content{min-width:0;flex:1;display:flex;align-items:center;align-self:stretch;gap:10px;color:var(--ink);text-decoration:none;border-radius:12px}
 .app-card-link:focus-visible{outline:2px solid #67C7C3;outline-offset:3px}
@@ -860,6 +860,7 @@ body{
 .carousel-footer{position:relative;z-index:2;margin-top:auto;padding-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .carousel-controls{display:flex;align-items:center;gap:7px}
 .carousel-controls button{width:29px;height:29px;border:1px solid #AFDAD6;border-radius:50%;background:#fff;color:#007F83;font-weight:800}
+.carousel-controls button:disabled{cursor:default;opacity:.42}
 .carousel-controls span{min-width:34px;color:#537274;font-size:8px;text-align:center}
 .commons .home-grid>.announcement{
   color:var(--ink);
@@ -896,7 +897,7 @@ body{
   .commons>aside .profile-menu>.profile>div,.commons>aside .profile-menu>.profile>b{display:block}
   .commons .main{width:100%;margin:0}
   .commons .topbar{min-height:58px;padding:9px 13px}
-  .commons .welcome{min-height:250px;padding:24px 21px}
+  .commons .welcome{min-height:230px;padding:22px 20px}
   .commons .welcome h1{font-size:40px}
   .daily-quote{margin-top:15px}
   .commons .welcome .daily-quote p{font-size:19px}
