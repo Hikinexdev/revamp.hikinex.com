@@ -11,6 +11,16 @@ type Application = { id: string; name: string; description: string; icon: string
 type CompanyUpdate = { id: string; title: string; summary: string; body: string; audience: "company" | "department"; department: string | null; pinned: boolean; published_at: string; created_by: string };
 type CompanyUpdateDraft = Pick<CompanyUpdate, "title" | "summary" | "body" | "audience" | "department">;
 
+const viewRoutes: Partial<Record<View, string>> = { Apps: "apps", Announcements: "updates" };
+
+function viewFromLocation(): View {
+  if (typeof window === "undefined") return "Home";
+  const route = new URL(window.location.href).searchParams.get("view");
+  if (route === "apps") return "Apps";
+  if (route === "updates") return "Announcements";
+  return "Home";
+}
+
 function updateDate(value: string) {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(value)).toUpperCase();
 }
@@ -232,6 +242,15 @@ export default function Portal() {
   const assignedIds = useMemo(() => new Set([...roleDefaults[role], ...addedIds]), [role, addedIds]);
   const pinnedIdSet = useMemo(() => new Set(pinnedIds), [pinnedIds]);
   const nav: View[] = ["Announcements"];
+  const navigate = (nextView: View, replace = false) => {
+    setView(nextView);
+    const url = new URL(window.location.href);
+    const route = viewRoutes[nextView];
+    if (route) url.searchParams.set("view", route);
+    else url.searchParams.delete("view");
+    window.history[replace ? "replaceState" : "pushState"]({ portalView: nextView }, "", url);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const closeNavigationOnMobile = () => { if (window.matchMedia("(max-width: 760px)").matches) setMenu(false); };
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 761px)");
@@ -239,6 +258,12 @@ export default function Portal() {
     syncNavigation();
     desktop.addEventListener("change", syncNavigation);
     return () => desktop.removeEventListener("change", syncNavigation);
+  }, []);
+  useEffect(() => {
+    const restoreView = () => setView(viewFromLocation());
+    restoreView();
+    window.addEventListener("popstate", restoreView);
+    return () => window.removeEventListener("popstate", restoreView);
   }, []);
   useEffect(() => { const key = (event: KeyboardEvent) => { if (event.key === "Escape") setMenu(false); }; window.addEventListener("keydown", key); return () => window.removeEventListener("keydown", key); }, []);
   useEffect(() => {
@@ -272,7 +297,7 @@ export default function Portal() {
       }
       setRole((storedRole.charAt(0).toUpperCase() + storedRole.slice(1)) as Role);
       setDepartment(profileResult.data?.department || "H!KINEX");
-      setView("Home");
+      setView(viewFromLocation());
       if (!assignmentResult.error) setAddedIds((assignmentResult.data ?? []).map((row) => row.application_id));
       if (!updatesResult.error) setCompanyUpdates((updatesResult.data ?? []) as CompanyUpdate[]);
       const savedPins = session.user.user_metadata?.pinned_apps;
@@ -388,7 +413,7 @@ export default function Portal() {
     setSavedName(null);
     setAddedIds([]);
     setRole("Employee");
-    setView("Home");
+    navigate("Home", true);
     setProfileReady(false);
     setAuthReady(true);
     setAuthBusy(false);
@@ -406,8 +431,8 @@ export default function Portal() {
   const managementAllowed = (role === "Manager" && (view === "Team" || view === "Requests")) || (role === "Admin" && view === "Admin");
   return <main className={`portal commons ${dark ? "dark" : ""}`}>
     <aside className={menu ? "open" : ""} aria-label="Portal navigation">
-      <button className="brand-home" onClick={() => { setView("Home"); closeNavigationOnMobile(); }} aria-label="Open dashboard"><Brand /></button>
-      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { setView(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span><span className="nav-label">{labels[item]}</span></button>)}<a className="side-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span className="nav-label">Outlook</span></a><a className="side-link" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span className="copilot-mark" aria-hidden="true">✦</span><span className="nav-label">Copilot</span></a></nav>
+      <button className="brand-home" onClick={() => { navigate("Home"); closeNavigationOnMobile(); }} aria-label="Open dashboard"><Brand /></button>
+      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { navigate(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span><span className="nav-label">{labels[item]}</span></button>)}<a className="side-link" href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="outlook-mark" aria-hidden="true">O</span><span className="nav-label">Outlook</span></a><a className="side-link" href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Copilot"><span className="copilot-mark" aria-hidden="true">✦</span><span className="nav-label">Copilot</span></a></nav>
       <details className="profile-menu"><summary className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{roleCopy[role].title}</small></div><b aria-hidden="true">⌄</b></summary><div className="account-menu"><button onClick={() => setDark((current) => !current)} aria-pressed={dark}><span aria-hidden="true">{dark ? "☀" : "◐"}</span><span><strong>{dark ? "Light mode" : "Dark mode"}</strong><small>Change portal appearance</small></span></button><button className="account-signout" onClick={signOut}><span aria-hidden="true">↪</span><span><strong>Sign out</strong><small>End this secure session</small></span></button></div></details>
       <footer><strong>H!KINEX Commons</strong><small>Secure session</small></footer>
     </aside>
@@ -415,8 +440,8 @@ export default function Portal() {
     <section className="main">
       <header className="topbar"><button className="menu" onClick={() => setMenu((current) => !current)} aria-label={menu ? "Collapse navigation" : "Expand navigation"} aria-expanded={menu}>☰</button>{role !== "Employee" && <select aria-label="Department" value={department} onChange={(event) => setDepartment(event.target.value)}><option>{role === "Admin" ? "All departments" : department}</option><option>H!KINEX</option><option>Sales</option><option>Recruiting</option><option>Marketing</option><option>IT</option><option>DogFoodDev</option></select>}</header>
       <div className="content">
-        {view === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} updates={companyUpdates} navigate={setView} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
-        {view === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} navigate={setView} onAdd={addApp} onAddAndPin={addAndPin} onRemove={removeApp} onTogglePin={togglePin} />}
+        {view === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} updates={companyUpdates} navigate={navigate} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
+        {view === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} navigate={navigate} onAdd={addApp} onAddAndPin={addAndPin} onRemove={removeApp} onTogglePin={togglePin} />}
         {view === "Announcements" && <AnnouncementsView role={role} department={department} items={companyUpdates} onCreate={createCompanyUpdate} notify={notify} />}
         {view === "Feed" && <FeedView notify={notify} />}
         {view === "Groups" && <GroupsView role={role} notify={notify} />}
