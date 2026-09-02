@@ -169,6 +169,9 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.match(page, /matchMedia\("\(min-width: 761px\)"\)/);
   assert.match(styles, /\.commons\.dark \.section-head h2.*color:#E8F5F3!important/);
   assert.match(styles, /\.commons\.dark \.home-grid>\.span-two\{background:linear-gradient\(145deg,#0D3033,#123C3F\)/);
+  assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile\{/);
+  assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile strong\{color:#F4FFFE\}/);
+  assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile small\{color:#B8CECD\}/);
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
