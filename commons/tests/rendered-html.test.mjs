@@ -36,17 +36,18 @@ test("uses the brand as Home and gives every role a Company Updates tab", async 
   assert.doesNotMatch(page, /const nav: View\[\] = \["Home"\]/);
 });
 
-test("consolidates Company Updates, Outlook and Copilot inside the side menu", async () => {
+test("restores the September 1 header and keeps Microsoft shortcuts in the welcome area", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.doesNotMatch(page, /<span className="role-badge">/);
   assert.doesNotMatch(page, /<label className="global-search">/);
-  assert.doesNotMatch(page, /className="microsoft-shortcuts welcome-microsoft"/);
+  assert.match(page, /className="microsoft-shortcuts welcome-microsoft"/);
   assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
   assert.match(page, /https:\/\/m365\.cloud\.microsoft\/chat\//);
   assert.match(page, /aria-label="Portal navigation"/);
   assert.match(page, /aria-expanded=\{menu\}/);
-  assert.match(styles, /\.commons>aside\.open\{width:250px/);
+  assert.match(styles, /\.commons>aside \.brand-home\{position:absolute;left:50%/);
+  assert.doesNotMatch(styles, /September dashboard feedback/);
   assert.doesNotMatch(page, /Your people and work, together/);
 });
 
@@ -69,7 +70,8 @@ test("lets signed-in users pin and unpin assigned dashboard apps", async () => {
   assert.match(page, /pinned_apps: next/);
   assert.match(page, /supabase\.auth\.updateUser/);
   assert.match(page, /assignedIds\.has\(app\.id\) && pinnedIds\.has\(app\.id\)/);
-  assert.match(page, /No pinned apps yet/);
+  assert.match(page, /className="request-card"/);
+  assert.match(page, /Add or pin an App/);
   assert.match(page, /pinnedIds=\{pinnedIdSet\}/);
   assert.match(page, /onTogglePin=\{togglePin\}/);
   assert.match(page, /essentialDashboardApps = \["mission-control", "timekeeper", "lms"\]/);
@@ -163,12 +165,10 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.match(page, /setInterval/);
   assert.match(page, /className="app-card-link"/);
   assert.doesNotMatch(page, />Open ↗</);
-  assert.match(styles, /min-height:168px/);
+  assert.match(styles, /min-height:320px/);
   assert.match(page, /const canRotate = updates\.length > 1/);
   assert.match(page, /disabled=\{!canRotate\}/);
-  assert.match(page, /matchMedia\("\(min-width: 761px\)"\)/);
-  assert.match(styles, /\.commons\.dark \.section-head h2.*color:#E8F5F3!important/);
-  assert.match(styles, /\.commons\.dark \.home-grid>\.span-two\{background:linear-gradient\(145deg,#0D3033,#123C3F\)/);
+  assert.match(styles, /\.commons\.dark \.request-card/);
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile\{/);
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile strong\{color:#F4FFFE\}/);
   assert.match(styles, /\.commons\.dark>aside \.profile-menu>\.profile small\{color:#B8CECD\}/);
@@ -177,8 +177,7 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
-  assert.doesNotMatch(page, /Add or pin an App/);
-  assert.match(page, /Add or pin App →/);
+  assert.match(page, /Add or pin an App/);
 });
 
 test("loads and publishes real role-scoped company updates through Supabase", async () => {
