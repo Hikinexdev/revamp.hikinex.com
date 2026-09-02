@@ -806,7 +806,7 @@ body{
 .commons.dark .welcome-microsoft{background:#0A2E30f2;border-color:#315C5E;box-shadow:0 18px 42px rgba(0,0,0,.3)}
 .commons.dark .microsoft-shortcuts a{background:#123C3F;color:#E8F5F3;border-color:#3A686A}
 .commons.dark .directory-quick-access,.commons.dark .directory-tools label,.commons.dark .directory-tools button,.commons.dark .news-list article{color:var(--ink);border-color:#315C5E}
-@media(min-width:1051px) and (min-height:700px){
+@media(min-width:1051px){
   .commons .topbar{display:none}
   .commons .content{padding:22px clamp(24px,4vw,58px) 28px}
   .commons .welcome{height:310px;min-height:0;padding:22px 38px;border-radius:28px}
