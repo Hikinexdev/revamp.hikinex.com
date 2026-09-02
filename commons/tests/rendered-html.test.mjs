@@ -161,7 +161,10 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.match(page, /setInterval/);
   assert.match(page, /className="app-card-link"/);
   assert.doesNotMatch(page, />Open ↗</);
-  assert.match(styles, /min-height:190px/);
+  assert.match(styles, /min-height:168px/);
+  assert.match(page, /const canRotate = updates\.length > 1/);
+  assert.match(page, /disabled=\{!canRotate\}/);
+  assert.match(page, /matchMedia\("\(min-width: 761px\)"\)/);
   assert.match(styles, /\.commons\.dark \.section-head h2.*color:#E8F5F3!important/);
   assert.match(styles, /\.commons\.dark \.home-grid>\.span-two\{background:linear-gradient\(145deg,#0D3033,#123C3F\)/);
   assert.doesNotMatch(page, /className="panel feed-card"/);
