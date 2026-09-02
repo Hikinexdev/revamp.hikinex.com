@@ -199,5 +199,16 @@ test("signs out the current browser session and always resets portal state", asy
   assert.match(page, /setSession\(null\)/);
   assert.match(page, /setSavedName\(null\)/);
   assert.match(page, /setRole\("Employee"\)/);
-  assert.match(page, /setView\("Home"\)/);
+  assert.match(page, /navigate\("Home", true\)/);
+});
+
+test("creates browser history for internal portal navigation", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /viewRoutes: Partial<Record<View, string>>/);
+  assert.match(page, /searchParams\.set\("view", route\)/);
+  assert.match(page, /window\.history\[replace \? "replaceState" : "pushState"\]/);
+  assert.match(page, /window\.addEventListener\("popstate", restoreView\)/);
+  assert.match(page, /window\.removeEventListener\("popstate", restoreView\)/);
+  assert.match(page, /viewFromLocation\(\)/);
+  assert.match(page, /navigate=\{navigate\}/);
 });
