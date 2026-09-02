@@ -36,12 +36,15 @@ test("uses the brand as Home and gives every role a Company Updates tab", async 
   assert.doesNotMatch(page, /const nav: View\[\] = \["Home"\]/);
 });
 
-test("restores the September 1 header and keeps Microsoft shortcuts in the welcome area", async () => {
+test("restores the September 1 header and keeps Microsoft apps in an accessible welcome dropdown", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.doesNotMatch(page, /<span className="role-badge">/);
   assert.doesNotMatch(page, /<label className="global-search">/);
-  assert.match(page, /className="microsoft-shortcuts welcome-microsoft"/);
+  assert.match(page, /className="microsoft-menu-trigger"/);
+  assert.match(page, /aria-expanded=\{open\}/);
+  assert.match(page, /id="microsoft-app-menu" role="menu"/);
+  assert.match(page, /closeWithEscape/);
   assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
   assert.match(page, /https:\/\/teams\.cloud\.microsoft\//);
   assert.match(page, /https:\/\/www\.microsoft365\.com\/launch\/onedrive/);
@@ -183,6 +186,26 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
   assert.match(page, /Add or pin an App/);
+});
+
+test("keeps the Add or pin card aligned with application cards", async () => {
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.app-tile\{[\s\S]*?min-height:94px/);
+  assert.match(styles, /\.request-card\{width:100%;min-height:94px/);
+});
+
+test("uses one consistent action style for company update links", async () => {
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.announcement-top>button,\.carousel-footer>button\{/);
+  assert.match(styles, /border-radius:999px;background:rgba\(4,230,234,\.12\);color:var\(--aqua\)/);
+});
+
+test("keeps the desktop dashboard compact and dark surfaces consistent", async () => {
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /Unified dark surfaces and compact desktop dashboard/);
+  assert.match(styles, /\.commons\.dark \.home-grid>\.span-two,\.commons\.dark \.panel\{/);
+  assert.match(styles, /@media\(min-width:1051px\) and \(min-height:700px\)/);
+  assert.match(styles, /\.app-tile,\.request-card\{min-height:78px/);
 });
 
 test("loads and publishes real role-scoped company updates through Supabase", async () => {

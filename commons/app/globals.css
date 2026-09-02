@@ -52,12 +52,18 @@
 .commons>aside .brand-home:hover .brand,.commons>aside .brand-home:focus-visible .brand{color:#007F83}
 .commons>aside .brand-home:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
 .commons>aside nav{z-index:2}
+.microsoft-menu{position:relative;z-index:5;align-self:flex-start;margin-left:auto}
+.microsoft-menu-trigger{min-width:154px;height:42px;display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid rgba(10,46,48,.13);border-radius:14px;background:rgba(255,255,255,.82);color:var(--ink);box-shadow:0 10px 26px rgba(10,46,48,.09);font-size:10px;font-weight:800;backdrop-filter:blur(12px)}
+.microsoft-menu-trigger:hover,.microsoft-menu-trigger:focus-visible{border-color:#79C8C6;background:#fff;outline:none}
+.microsoft-grid-mark{width:24px;height:24px;display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:3px;border-radius:7px;background:#1473E6}
+.microsoft-grid-mark i{display:block;border-radius:1px;background:#fff}
+.menu-chevron{margin-left:auto;font-size:14px;transition:transform .18s ease}.microsoft-menu-trigger[aria-expanded="true"] .menu-chevron{transform:rotate(180deg)}
 .microsoft-shortcuts{margin-left:auto;display:flex;align-items:center;gap:7px}
 .microsoft-shortcuts a{height:36px;display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);padding:6px 9px;text-decoration:none;font-size:9px;font-weight:700}
 .microsoft-shortcuts a:hover,.microsoft-shortcuts a:focus-visible{border-color:#9BCBC8;background:#F1FAF9;outline:none}
 .microsoft-app-mark{width:23px;height:23px;display:grid;place-items:center;border-radius:6px;color:#fff;font-weight:800}
 .outlook-mark{background:#1473E6}.teams-mark{background:#6264A7}.onedrive-mark{background:#0078D4}.word-mark{background:#185ABD}.excel-mark{background:#107C41}.powerpoint-mark{background:#C43E1C}
-.welcome-microsoft{position:relative;z-index:2;align-self:flex-start;margin-left:auto;padding:8px;background:#ffffffb8;border:1px solid #fff;border-radius:16px;box-shadow:0 12px 28px rgba(10,46,48,.09);display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));width:min(248px,100%)}
+.welcome-microsoft{position:absolute;z-index:6;top:50px;right:0;margin:0;padding:8px;background:#ffffffec;border:1px solid #fff;border-radius:16px;box-shadow:0 18px 42px rgba(10,46,48,.16);display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));width:248px}
 .welcome-microsoft a{background:#fff}
 .daily-quote{max-width:680px;margin:24px 0 0;padding:12px 0 12px 16px;border-left:3px solid #01BFC2}
 .commons .welcome .daily-quote p{margin:0;color:#294F51;font-family:Fraunces,Georgia,serif;font-size:24px;line-height:1.3}
@@ -65,13 +71,15 @@
 .empty-pins{min-height:82px;border:1px dashed #AACAC7;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px;text-align:center;color:var(--muted)}
 .empty-pins strong{font-size:10px;color:var(--ink)}.empty-pins small{font-size:8px}
 .commons.dark>aside .brand-home{color:var(--ink)}
+.commons.dark .microsoft-menu-trigger{background:#123C3F;color:var(--ink);border-color:#315C5E}
+.commons.dark .microsoft-menu-trigger:hover,.commons.dark .microsoft-menu-trigger:focus-visible{background:#18484B;border-color:#4C7779}
 .commons.dark .microsoft-shortcuts a{background:#0D3033;color:var(--ink);border-color:var(--line)}
 .commons.dark .microsoft-shortcuts a:hover,.commons.dark .microsoft-shortcuts a:focus-visible{background:#123C3F;border-color:#4C7779}
 .commons.dark .office-apps svg{fill:#C2D5D4}
 .commons.dark .welcome-microsoft{background:#0A2E30aa;border-color:#285054}
 .commons.dark .daily-quote{border-color:var(--aqua)}.commons.dark .welcome .daily-quote p{color:#D7E9E7}.commons.dark .daily-quote cite{color:#9EB9B8}
 .commons.dark .empty-pins{border-color:#4D7778}.commons.dark .empty-pins strong{color:var(--ink)}
-@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-shortcuts a>span:last-child{display:none}.microsoft-shortcuts a{width:36px;justify-content:center;padding:6px}.welcome-microsoft{display:grid;grid-template-columns:repeat(6,36px);width:auto;margin:24px 0 0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
+@media(max-width:760px){.commons>aside .brand-home{position:static;transform:none;margin:0 auto 10px}.commons>aside .profile-menu{order:1}.commons>aside nav{order:2}.microsoft-menu{margin:22px 0 0}.microsoft-menu-trigger{min-width:150px}.microsoft-shortcuts a>span:last-child{display:inline}.microsoft-shortcuts a{width:auto;justify-content:flex-start;padding:6px 9px}.welcome-microsoft{top:49px;right:auto;left:0;display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));width:236px;margin:0;padding:7px}.commons .welcome .daily-quote p{font-size:20px}.daily-quote cite{font-size:10px}}
 .commons .home-grid{grid-template-columns:1.35fr .65fr;grid-template-areas:"apps announcement";align-items:start}
 @media(max-width:760px){.commons .home-grid{grid-template-columns:1fr;grid-template-areas:"apps" "announcement"}}
 
@@ -220,7 +228,7 @@ body{
   letter-spacing:.015em;
 }
 .welcome-microsoft{
-  margin-top:-8px;
+  margin-top:0;
   padding:9px;
   border-color:rgba(255,255,255,.86);
   border-radius:18px;
@@ -774,12 +782,40 @@ body{
 .commons.dark>aside .profile-menu>.profile>b{color:#8FEAEC}
 .commons.dark>aside .profile-menu>.profile:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
 .commons.dark .welcome .kicker{color:#8FEAEC;border-color:rgba(143,234,236,.32);background:rgba(4,230,234,.09);box-shadow:inset 0 1px rgba(255,255,255,.04)}
-.request-card{min-height:82px;padding:12px;border:1px dashed #78BDB9;background:rgba(248,252,251,.72);border-radius:13px;color:#00878B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.request-card{width:100%;min-height:94px;padding:14px;border:1px dashed #78BDB9;background:rgba(248,252,251,.72);border-radius:18px;color:#00878B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .request-card:hover,.request-card:focus-visible{border-color:var(--teal);background:#EAF9F7;outline:none;transform:translateY(-1px)}
 .request-card span{font-size:18px;line-height:1}.request-card strong{font-size:10px}.request-card small{font-size:7px;color:var(--muted)}
 .commons.dark .request-card{background:#0D3033;color:var(--aqua);border-color:#4D8583}
 .commons.dark .request-card:hover,.commons.dark .request-card:focus-visible{background:#123C3F;border-color:var(--aqua)}
-.commons.dark .announcement-top>button,.commons.dark .carousel-footer>button{color:var(--aqua)}
+.announcement-top,.carousel-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.announcement-top>button,.carousel-footer>button{border:1px solid rgba(4,230,234,.42);border-radius:999px;background:rgba(4,230,234,.12);color:var(--aqua);padding:8px 11px;font-size:9px;font-weight:800;line-height:1;white-space:nowrap;transition:background .16s ease,border-color .16s ease,transform .16s ease}
+.announcement-top>button:hover,.announcement-top>button:focus-visible,.carousel-footer>button:hover,.carousel-footer>button:focus-visible{border-color:var(--aqua);background:rgba(4,230,234,.22);outline:none;transform:translateY(-1px)}
+.carousel-footer{margin-top:18px}.carousel-footer>button{margin:0}
+.commons.dark .announcement-top>button,.commons.dark .carousel-footer>button{color:var(--aqua);background:rgba(4,230,234,.1);border-color:#3A8688}
 .commons.dark .carousel-controls button{background:#0D3033;color:var(--aqua);border-color:#3A686A}
 .commons.dark .carousel-controls span{color:#A8C2C1}
 .carousel-controls button:disabled{cursor:default;opacity:.42}
+
+/* Unified dark surfaces and compact desktop dashboard */
+.commons.dark .home-grid>.span-two,.commons.dark .panel{background:linear-gradient(145deg,#0D3033,#123C3F);color:var(--ink);border-color:#315C5E;box-shadow:0 14px 38px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.04)}
+.commons.dark .section-head h2,.commons.dark .section-hint,.commons.dark .app-tile strong,.commons.dark .app-tile small{color:var(--ink)}
+.commons.dark .section-hint,.commons.dark .app-tile small{color:#A8C2C1}
+.commons.dark .app-tile{background:linear-gradient(145deg,#103638,#123E40);color:var(--ink);border-color:#3A686A;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.commons.dark .app-tile:hover{border-color:#58AAA9;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+.commons.dark .request-card{background:linear-gradient(145deg,#103638,#123E40);color:var(--aqua);border-color:#4D8583}
+.commons.dark .welcome-microsoft{background:#0A2E30f2;border-color:#315C5E;box-shadow:0 18px 42px rgba(0,0,0,.3)}
+.commons.dark .microsoft-shortcuts a{background:#123C3F;color:#E8F5F3;border-color:#3A686A}
+.commons.dark .directory-quick-access,.commons.dark .directory-tools label,.commons.dark .directory-tools button,.commons.dark .news-list article{color:var(--ink);border-color:#315C5E}
+@media(min-width:1051px) and (min-height:700px){
+  .commons .content{padding:22px clamp(24px,4vw,58px) 28px}
+  .commons .welcome{min-height:218px;padding:27px 38px;border-radius:28px}
+  .commons .welcome h1{font-size:clamp(40px,3.6vw,52px)}
+  .daily-quote{margin-top:14px;padding:10px 14px 11px 16px}
+  .commons .welcome .daily-quote p{font-size:clamp(20px,1.55vw,24px)}
+  .daily-quote cite{margin-top:7px}
+  .commons .home-grid{gap:14px;margin-top:14px}
+  .commons .panel{padding:19px;border-radius:23px}
+  .section-head{margin-bottom:13px}
+  .section-head h2,.commons .panel>h2{font-size:23px}
+  .app-tile,.request-card{min-height:78px;padding:11px;border-radius:15px}
+}

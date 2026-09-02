@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { accountName } from "../lib/account-name";
@@ -120,6 +120,28 @@ function DailyQuote() {
   return <blockquote className="daily-quote"><p>“{quote.text}”</p><cite>— {quote.author}</cite></blockquote>;
 }
 
+const microsoftApps = [
+  { name: "Outlook", href: "https://outlook.office.com/mail/", mark: "O", className: "outlook-mark" },
+  { name: "Teams", href: "https://teams.cloud.microsoft/", mark: "T", className: "teams-mark" },
+  { name: "OneDrive", href: "https://www.microsoft365.com/launch/onedrive", mark: "☁", className: "onedrive-mark" },
+  { name: "Word", href: "https://www.microsoft365.com/launch/word", mark: "W", className: "word-mark" },
+  { name: "Excel", href: "https://www.microsoft365.com/launch/excel", mark: "X", className: "excel-mark" },
+  { name: "PowerPoint", href: "https://www.microsoft365.com/launch/powerpoint", mark: "P", className: "powerpoint-mark" },
+];
+
+function MicrosoftAppsMenu() {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const closeOutside = (event: MouseEvent) => { if (!menuRef.current?.contains(event.target as Node)) setOpen(false); };
+    const closeWithEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", closeOutside);
+    document.addEventListener("keydown", closeWithEscape);
+    return () => { document.removeEventListener("mousedown", closeOutside); document.removeEventListener("keydown", closeWithEscape); };
+  }, []);
+  return <div className="microsoft-menu" ref={menuRef}><button className="microsoft-menu-trigger" type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-controls="microsoft-app-menu"><span className="microsoft-grid-mark" aria-hidden="true"><i /><i /><i /><i /></span><span>Microsoft 365</span><span className="menu-chevron" aria-hidden="true">⌄</span></button>{open && <div className="microsoft-shortcuts welcome-microsoft" id="microsoft-app-menu" role="menu" aria-label="Microsoft apps">{microsoftApps.map((app) => <a key={app.name} href={app.href} target="_blank" rel="noopener noreferrer" role="menuitem" aria-label={`Open ${app.name}`} onClick={() => setOpen(false)}><span className={`microsoft-app-mark ${app.className}`} aria-hidden="true">{app.mark}</span><span>{app.name}</span></a>)}</div>}</div>;
+}
+
 function Brand() { return <div className="brand"><span>H!</span>KINEX<small>EMPLOYEE HUB</small></div>; }
 
 function PinIcon() {
@@ -157,7 +179,7 @@ function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, updates,
   const visibleApps = apps.filter((app) => assignedIds.has(app.id) && pinnedIds.has(app.id));
 
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><div className="microsoft-shortcuts welcome-microsoft" aria-label="Microsoft apps"><a href="https://outlook.office.com/mail/" target="_blank" rel="noopener noreferrer" aria-label="Open Outlook"><span className="microsoft-app-mark outlook-mark" aria-hidden="true">O</span><span>Outlook</span></a><a href="https://teams.cloud.microsoft/" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Teams"><span className="microsoft-app-mark teams-mark" aria-hidden="true">T</span><span>Teams</span></a><a href="https://www.microsoft365.com/launch/onedrive" target="_blank" rel="noopener noreferrer" aria-label="Open OneDrive"><span className="microsoft-app-mark onedrive-mark" aria-hidden="true">☁</span><span>OneDrive</span></a><a href="https://www.microsoft365.com/launch/word" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Word"><span className="microsoft-app-mark word-mark" aria-hidden="true">W</span><span>Word</span></a><a href="https://www.microsoft365.com/launch/excel" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft Excel"><span className="microsoft-app-mark excel-mark" aria-hidden="true">X</span><span>Excel</span></a><a href="https://www.microsoft365.com/launch/powerpoint" target="_blank" rel="noopener noreferrer" aria-label="Open Microsoft PowerPoint"><span className="microsoft-app-mark powerpoint-mark" aria-hidden="true">P</span><span>PowerPoint</span></a></div></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><MicrosoftAppsMenu /></section>
     <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My pinned apps</h2><small className="section-hint">Only pinned apps appear here. Use the directory to pin another app.</small></div></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} pinned canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add or pin an App</strong><small>Browse the approved directory</small></button></div></section>
       <CompanyUpdatesCarousel updates={updates} navigate={navigate} />
     </div>
