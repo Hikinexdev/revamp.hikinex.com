@@ -205,6 +205,8 @@ test("keeps the desktop dashboard compact and dark surfaces consistent", async (
   assert.match(styles, /Unified dark surfaces and compact desktop dashboard/);
   assert.match(styles, /\.commons\.dark \.home-grid>\.span-two,\.commons\.dark \.panel\{/);
   assert.match(styles, /@media\(min-width:1051px\) and \(min-height:700px\)/);
+  assert.match(styles, /\.commons \.topbar\{display:none\}/);
+  assert.match(styles, /\.commons \.welcome\{height:310px;min-height:0/);
   assert.match(styles, /\.app-tile,\.request-card\{min-height:78px/);
 });
 
