@@ -43,7 +43,12 @@ test("restores the September 1 header and keeps Microsoft shortcuts in the welco
   assert.doesNotMatch(page, /<label className="global-search">/);
   assert.match(page, /className="microsoft-shortcuts welcome-microsoft"/);
   assert.match(page, /https:\/\/outlook\.office\.com\/mail\//);
-  assert.match(page, /https:\/\/m365\.cloud\.microsoft\/chat\//);
+  assert.match(page, /https:\/\/teams\.cloud\.microsoft\//);
+  assert.match(page, /https:\/\/www\.microsoft365\.com\/launch\/onedrive/);
+  assert.match(page, /https:\/\/www\.microsoft365\.com\/launch\/word/);
+  assert.match(page, /https:\/\/www\.microsoft365\.com\/launch\/excel/);
+  assert.match(page, /https:\/\/www\.microsoft365\.com\/launch\/powerpoint/);
+  assert.doesNotMatch(page, /Microsoft Copilot|m365\.cloud\.microsoft\/chat/);
   assert.match(page, /aria-label="Portal navigation"/);
   assert.match(page, /aria-expanded=\{menu\}/);
   assert.match(styles, /\.commons>aside \.brand-home\{position:absolute;left:50%/);
