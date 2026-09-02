@@ -163,6 +163,7 @@ test("keeps the Home dashboard focused on pinned apps and the company update", a
   assert.doesNotMatch(page, />Open ↗</);
   assert.match(styles, /min-height:190px/);
   assert.match(styles, /\.commons\.dark \.section-head h2.*color:#E8F5F3!important/);
+  assert.match(styles, /\.commons\.dark \.home-grid>\.span-two\{background:linear-gradient\(145deg,#0D3033,#123C3F\)/);
   assert.doesNotMatch(page, /className="panel feed-card"/);
   assert.doesNotMatch(page, /className="panel quick"/);
   assert.doesNotMatch(page, /QUICK ACTIONS/);
