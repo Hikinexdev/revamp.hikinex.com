@@ -11,14 +11,28 @@ type Application = { id: string; name: string; description: string; icon: string
 type CompanyUpdate = { id: string; title: string; summary: string; body: string; audience: "company" | "department"; department: string | null; pinned: boolean; published_at: string; created_by: string };
 type CompanyUpdateDraft = Pick<CompanyUpdate, "title" | "summary" | "body" | "audience" | "department">;
 
-const viewRoutes: Partial<Record<View, string>> = { Apps: "apps", Announcements: "updates" };
+const viewRoutes: Partial<Record<View, string>> = {
+  Apps: "apps",
+  Announcements: "updates",
+  Feed: "feed",
+  Groups: "groups",
+  People: "people",
+  Jobs: "jobs",
+  Team: "team",
+  Requests: "requests",
+  Admin: "admin",
+};
+
+const roleNavigation: Record<Role, View[]> = {
+  Employee: ["Apps", "Announcements", "Feed", "Groups", "People", "Jobs"],
+  Manager: ["Apps", "Announcements", "Feed", "Groups", "People", "Jobs", "Team", "Requests"],
+  Admin: ["Apps", "Announcements", "Feed", "Groups", "People", "Jobs", "Admin"],
+};
 
 function viewFromLocation(): View {
   if (typeof window === "undefined") return "Home";
   const route = new URL(window.location.href).searchParams.get("view");
-  if (route === "apps") return "Apps";
-  if (route === "updates") return "Announcements";
-  return "Home";
+  return (Object.entries(viewRoutes).find(([, value]) => value === route)?.[0] as View | undefined) ?? "Home";
 }
 
 function updateDate(value: string) {
@@ -163,23 +177,23 @@ function AppTile({ app, assigned, protectedApp, directory = false, canEdit, pinn
 
 function CompanyUpdatesCarousel({ updates, navigate }: { updates: CompanyUpdate[]; navigate: (view: View) => void }) {
   const [index, setIndex] = useState(0);
-  useEffect(() => { if (index >= updates.length) setIndex(0); }, [index, updates.length]);
   useEffect(() => {
     if (updates.length < 2) return;
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % updates.length), 8_000);
     return () => window.clearInterval(timer);
   }, [updates.length]);
-  const update = updates[index] ?? null;
+  const safeIndex = updates.length === 0 ? 0 : index % updates.length;
+  const update = updates[safeIndex] ?? null;
   const canRotate = updates.length > 1;
-  return <section className="panel announcement announcement-carousel" aria-label="Company updates carousel" aria-live="polite"><div className="announcement-top"><p className="kicker">COMPANY UPDATES</p><button onClick={() => navigate("Announcements")}>View all →</button></div>{update ? <><span className="date">{updateDate(update.published_at)}</span><h2>{update.title}</h2><p>{update.summary}</p><div className="carousel-footer"><button onClick={() => navigate("Announcements")}>Read update →</button><div className="carousel-controls" aria-label="Choose company update"><button onClick={() => setIndex((current) => (current - 1 + updates.length) % updates.length)} aria-label="Previous company update" disabled={!canRotate}>←</button><span>{index + 1} / {updates.length}</span><button onClick={() => setIndex((current) => (current + 1) % updates.length)} aria-label="Next company update" disabled={!canRotate}>→</button></div></div></> : <div className="announcement-empty"><h2>No company updates yet</h2><p>Published updates will appear here automatically.</p><button onClick={() => navigate("Announcements")}>Open Company Updates →</button></div>}</section>;
+  return <section className="panel announcement announcement-carousel" aria-label="Company updates carousel" aria-live="polite"><div className="announcement-top"><p className="kicker">COMPANY UPDATES</p><button onClick={() => navigate("Announcements")}>View all →</button></div>{update ? <><span className="date">{updateDate(update.published_at)}</span><h2>{update.title}</h2><p>{update.summary}</p><div className="carousel-footer"><button onClick={() => navigate("Announcements")}>Read update →</button><div className="carousel-controls" aria-label="Choose company update"><button onClick={() => setIndex((current) => (current - 1 + updates.length) % updates.length)} aria-label="Previous company update" disabled={!canRotate}>←</button><span>{safeIndex + 1} / {updates.length}</span><button onClick={() => setIndex((current) => (current + 1) % updates.length)} aria-label="Next company update" disabled={!canRotate}>→</button></div></div></> : <div className="announcement-empty"><h2>No company updates yet</h2><p>Published updates will appear here automatically.</p><button onClick={() => navigate("Announcements")}>Open Company Updates →</button></div>}</section>;
 }
 
-function HomeView({ role, displayName, assignedIds, pinnedIds, canEdit, updates, navigate, onAdd, onRemove, onTogglePin }: { role: Role; displayName: string; assignedIds: Set<string>; pinnedIds: Set<string>; canEdit: boolean; updates: CompanyUpdate[]; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin: (app: Application) => void }) {
+function HomeView({ role, displayName, department, jobTitle, operationsManager, assignedIds, pinnedIds, canEdit, updates, navigate, onAdd, onRemove, onTogglePin }: { role: Role; displayName: string; department: string; jobTitle: string; operationsManager: string; assignedIds: Set<string>; pinnedIds: Set<string>; canEdit: boolean; updates: CompanyUpdate[]; navigate: (view: View) => void; onAdd: (app: Application) => void; onRemove: (app: Application) => void; onTogglePin: (app: Application) => void }) {
   const profile = roleCopy[role];
   const visibleApps = apps.filter((app) => assignedIds.has(app.id) && pinnedIds.has(app.id));
 
   return <>
-    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{profile.title} · {profile.team}</p>{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><MicrosoftAppsMenu /></section>
+    <section className="welcome"><div><p className="kicker">H!KINEX COMMONS · {role.toUpperCase()}</p><h1>{displayName ? `Welcome, ${displayName}.` : "Welcome."}</h1><p>{jobTitle || profile.title} · {department || profile.team}</p>{operationsManager && <p>Operations manager: {operationsManager}</p>}{!displayName && <p>To refresh your name, sign out and continue with Microsoft again.</p>}<DailyQuote /></div><MicrosoftAppsMenu /></section>
     <div className="home-grid"><section className="panel span-two"><div className="section-head"><div><p className="kicker">WORK</p><h2>My pinned apps</h2><small className="section-hint">Only pinned apps appear here. Use the directory to pin another app.</small></div></div><div className="apps-grid">{visibleApps.map((app) => <AppTile key={app.id} app={app} assigned protectedApp={roleDefaults[role].includes(app.id)} pinned canEdit={canEdit} onAdd={onAdd} onRemove={onRemove} onTogglePin={onTogglePin} />)}<button className="request-card" onClick={() => navigate("Apps")}><span>＋</span><strong>Add or pin an App</strong><small>Browse the approved directory</small></button></div></section>
       <CompanyUpdatesCarousel updates={updates} navigate={navigate} />
     </div>
@@ -242,7 +256,7 @@ function PageHead({ eyebrow, title, copy }: { eyebrow: string; title: string; co
 
 export default function Portal() {
   const [role, setRole] = useState<Role>("Employee");
-  const [view, setView] = useState<View>("Home");
+  const [view, setView] = useState<View>(() => viewFromLocation());
   const [menu, setMenu] = useState(false);
   const [toast, setToast] = useState("");
   const [dark, setDark] = useState(false);
@@ -255,6 +269,8 @@ export default function Portal() {
   const [addedIds, setAddedIds] = useState<string[]>([]);
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [department, setDepartment] = useState("H!KINEX");
+  const [jobTitle, setJobTitle] = useState("");
+  const [operationsManager, setOperationsManager] = useState("");
   const [companyUpdates, setCompanyUpdates] = useState<CompanyUpdate[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -263,7 +279,7 @@ export default function Portal() {
   const canEdit = Boolean(session && supabase);
   const assignedIds = useMemo(() => new Set([...roleDefaults[role], ...addedIds]), [role, addedIds]);
   const pinnedIdSet = useMemo(() => new Set(pinnedIds), [pinnedIds]);
-  const nav: View[] = ["Announcements"];
+  const nav = roleNavigation[role];
   const navigate = (nextView: View, replace = false) => {
     setView(nextView);
     const url = new URL(window.location.href);
@@ -284,7 +300,6 @@ export default function Portal() {
       window.history.replaceState({ portalView: "Home" }, "", homeUrl);
       window.history.pushState({ portalView: initialView }, "", sectionUrl);
     }
-    setView(initialView);
     window.addEventListener("popstate", restoreView);
     return () => window.removeEventListener("popstate", restoreView);
   }, []);
@@ -310,7 +325,7 @@ export default function Portal() {
       // its approved directory role. It accepts no user-supplied role or name.
       await supabase.rpc("sync_my_employee_role");
       const [profileResult, assignmentResult, updatesResult] = await Promise.all([
-        supabase.from("profiles").select("role, display_name, department").eq("user_id", session.user.id).maybeSingle(),
+        supabase.from("profiles").select("role, display_name, department, job_title, operations_manager").eq("user_id", session.user.id).maybeSingle(),
         supabase.from("user_app_assignments").select("application_id").eq("user_id", session.user.id).eq("source", "self_added"),
         supabase.from("company_updates").select("id, title, summary, body, audience, department, pinned, published_at, created_by").eq("published", true).order("pinned", { ascending: false }).order("published_at", { ascending: false }),
       ]);
@@ -324,7 +339,11 @@ export default function Portal() {
       }
       setRole((storedRole.charAt(0).toUpperCase() + storedRole.slice(1)) as Role);
       setDepartment(profileResult.data?.department || "H!KINEX");
-      setView(viewFromLocation());
+      setJobTitle(profileResult.data?.job_title || "");
+      setOperationsManager(profileResult.data?.operations_manager || "");
+      const normalizedRole = (storedRole.charAt(0).toUpperCase() + storedRole.slice(1)) as Role;
+      const requestedView = viewFromLocation();
+      setView(requestedView === "Home" || roleNavigation[normalizedRole].includes(requestedView) ? requestedView : "Home");
       if (!assignmentResult.error) setAddedIds((assignmentResult.data ?? []).map((row) => row.application_id));
       if (!updatesResult.error) setCompanyUpdates((updatesResult.data ?? []) as CompanyUpdate[]);
       const savedPins = session.user.user_metadata?.pinned_apps;
@@ -441,6 +460,9 @@ export default function Portal() {
     setSavedName(null);
     setAddedIds([]);
     setRole("Employee");
+    setDepartment("H!KINEX");
+    setJobTitle("");
+    setOperationsManager("");
     navigate("Home", true);
     setProfileReady(false);
     setAuthReady(true);
@@ -456,26 +478,27 @@ export default function Portal() {
   if (!authReady || (session && !profileReady)) return <main className="auth-page"><section className="auth-card"><Brand /><div className="auth-loading" aria-live="polite">Checking secure access…</div></section></main>;
   if (!session) return <main className="auth-page"><section className="auth-card"><Brand /><p className="kicker">SECURE EMPLOYEE ACCESS</p><h1>Welcome to H!KINEX Commons.</h1><p>Sign in with your assigned Employee, Manager, or Admin account. Your account role determines which portal and controls you can access.</p><button className="microsoft microsoft-primary" onClick={signInWithMicrosoft} disabled={authBusy || !isSupabaseConfigured}><span className="microsoft-mark" aria-hidden="true"><i /><i /><i /><i /></span>{authBusy ? "Connecting…" : "Continue with Microsoft"}</button><span className="or">or use your assigned portal credentials</span><label>Email<input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@hikinex.com" /></label><label>Password<input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" onKeyDown={(event) => { if (event.key === "Enter") signIn(); }} /></label>{authMessage && <div className="auth-error" role="alert">{authMessage}</div>}<button className="primary" onClick={signIn} disabled={authBusy || !isSupabaseConfigured}>{authBusy ? "Signing in…" : isSupabaseConfigured ? "Sign in with email" : "Secure access is being connected"}</button><small>Access and roles are managed by H!KINEX.</small></section></main>;
   if (authMessage) return <main className="auth-page"><section className="auth-card"><Brand /><p className="kicker">ACCESS NOT ASSIGNED</p><h1>We couldn’t open your portal.</h1><p>{authMessage}</p><button className="primary" onClick={signOut}>Sign out</button></section></main>;
-  const managementAllowed = (role === "Manager" && (view === "Team" || view === "Requests")) || (role === "Admin" && view === "Admin");
+  const permittedView = view === "Home" || roleNavigation[role].includes(view) ? view : "Home";
+  const managementAllowed = (role === "Manager" && (permittedView === "Team" || permittedView === "Requests")) || (role === "Admin" && permittedView === "Admin");
   return <main className={`portal commons ${dark ? "dark" : ""}`}>
     <aside className={menu ? "open" : ""} aria-label="Portal navigation">
       <button className="brand-home" onClick={() => { navigate("Home"); closeNavigationOnMobile(); }} aria-label="Open dashboard"><Brand /></button>
-      <nav>{nav.map((item) => <button className={view === item ? "active" : ""} onClick={() => { navigate(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span>{labels[item]}</button>)}</nav>
-      <details className="profile-menu"><summary className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{roleCopy[role].title}</small></div><b aria-hidden="true">⌄</b></summary><div className="account-menu"><button onClick={() => setDark((current) => !current)} aria-pressed={dark}><span aria-hidden="true">{dark ? "☀" : "◐"}</span><span><strong>{dark ? "Light mode" : "Dark mode"}</strong><small>Change portal appearance</small></span></button><button className="account-signout" onClick={signOut}><span aria-hidden="true">↪</span><span><strong>Sign out</strong><small>End this secure session</small></span></button></div></details>
+      <nav>{nav.map((item) => <button className={permittedView === item ? "active" : ""} onClick={() => { navigate(item); closeNavigationOnMobile(); }} key={item}><span aria-hidden="true">◫</span>{labels[item]}</button>)}</nav>
+      <details className="profile-menu"><summary className="profile"><span>{identity?.initials}</span><div><strong>{identity?.fullName || "Your account"}</strong><small>{jobTitle || roleCopy[role].title}</small></div><b aria-hidden="true">⌄</b></summary><div className="account-menu"><button onClick={() => setDark((current) => !current)} aria-pressed={dark}><span aria-hidden="true">{dark ? "☀" : "◐"}</span><span><strong>{dark ? "Light mode" : "Dark mode"}</strong><small>Change portal appearance</small></span></button><button className="account-signout" onClick={signOut}><span aria-hidden="true">↪</span><span><strong>Sign out</strong><small>End this secure session</small></span></button></div></details>
       <footer><strong>H!KINEX Commons</strong><small>Secure session</small></footer>
     </aside>
     {menu && <button className="overlay" aria-label="Close navigation" onClick={() => setMenu(false)} />}
     <section className="main">
       <header className="topbar"><button className="menu" onClick={() => setMenu((current) => !current)} aria-label={menu ? "Collapse navigation" : "Expand navigation"} aria-expanded={menu}>☰</button>{role !== "Employee" && <select aria-label="Department" value={department} onChange={(event) => setDepartment(event.target.value)}><option>{role === "Admin" ? "All departments" : department}</option><option>H!KINEX</option><option>Sales</option><option>Recruiting</option><option>Marketing</option><option>IT</option><option>DogFoodDev</option></select>}</header>
       <div className="content">
-        {view === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} updates={companyUpdates} navigate={navigate} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
-        {view === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} navigate={navigate} onAdd={addApp} onAddAndPin={addAndPin} onRemove={removeApp} onTogglePin={togglePin} />}
-        {view === "Announcements" && <AnnouncementsView role={role} department={department} items={companyUpdates} onCreate={createCompanyUpdate} notify={notify} />}
-        {view === "Feed" && <FeedView notify={notify} />}
-        {view === "Groups" && <GroupsView role={role} notify={notify} />}
-        {view === "People" && <PeopleView notify={notify} />}
-        {view === "Jobs" && <JobsView role={role} notify={notify} />}
-        {managementAllowed && <ManagementView role={role} view={view} notify={notify} />}
+        {permittedView === "Home" && <HomeView role={role} displayName={identity?.greetingName ?? ""} department={department} jobTitle={jobTitle} operationsManager={operationsManager} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} updates={companyUpdates} navigate={navigate} onAdd={addApp} onRemove={removeApp} onTogglePin={togglePin} />}
+        {permittedView === "Apps" && <AppsView role={role} assignedIds={assignedIds} pinnedIds={pinnedIdSet} canEdit={canEdit} navigate={navigate} onAdd={addApp} onAddAndPin={addAndPin} onRemove={removeApp} onTogglePin={togglePin} />}
+        {permittedView === "Announcements" && <AnnouncementsView role={role} department={department} items={companyUpdates} onCreate={createCompanyUpdate} notify={notify} />}
+        {permittedView === "Feed" && <FeedView notify={notify} />}
+        {permittedView === "Groups" && <GroupsView role={role} notify={notify} />}
+        {permittedView === "People" && <PeopleView notify={notify} />}
+        {permittedView === "Jobs" && <JobsView role={role} notify={notify} />}
+        {managementAllowed && <ManagementView role={role} view={permittedView} notify={notify} />}
       </div>
     </section>
     {toast && <div className="toast" role="status">{toast}<button onClick={() => setToast("")} aria-label="Dismiss">×</button></div>}
