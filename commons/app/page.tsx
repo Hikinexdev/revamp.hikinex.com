@@ -305,11 +305,15 @@ export default function Portal() {
   useEffect(() => {
     if (!session || !supabase) return;
     let current = true;
-    Promise.all([
-      supabase.from("profiles").select("role, display_name, department").eq("user_id", session.user.id).maybeSingle(),
-      supabase.from("user_app_assignments").select("application_id").eq("user_id", session.user.id).eq("source", "self_added"),
-      supabase.from("company_updates").select("id, title, summary, body, audience, department, pinned, published_at, created_by").eq("published", true).order("pinned", { ascending: false }).order("published_at", { ascending: false }),
-    ]).then(([profileResult, assignmentResult, updatesResult]) => {
+    const loadProfile = async () => {
+      // This server-side function reads the trusted Microsoft identity and applies
+      // its approved directory role. It accepts no user-supplied role or name.
+      await supabase.rpc("sync_my_employee_role");
+      const [profileResult, assignmentResult, updatesResult] = await Promise.all([
+        supabase.from("profiles").select("role, display_name, department").eq("user_id", session.user.id).maybeSingle(),
+        supabase.from("user_app_assignments").select("application_id").eq("user_id", session.user.id).eq("source", "self_added"),
+        supabase.from("company_updates").select("id, title, summary, body, audience, department, pinned, published_at, created_by").eq("published", true).order("pinned", { ascending: false }).order("published_at", { ascending: false }),
+      ]);
       if (!current) return;
       setSavedName({ userId: session.user.id, name: profileResult.data?.display_name });
       const storedRole = profileResult.data?.role;
@@ -330,7 +334,8 @@ export default function Portal() {
       setPinnedIds(initialPins);
       if (!defaultsSeeded) void supabase.auth.updateUser({ data: { pinned_apps: initialPins, dashboard_defaults_seeded: true, dashboard_defaults_version: dashboardDefaultsVersion } });
       setProfileReady(true);
-    });
+    };
+    void loadProfile();
     return () => { current = false; };
   }, [session]);
   const addApp = async (app: Application) => {
