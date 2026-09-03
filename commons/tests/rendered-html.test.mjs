@@ -30,7 +30,10 @@ test("keeps role navigation, official departments and safe actions", async () =>
 
 test("uses the brand as Home and gives every role a Company Updates tab", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /const nav: View\[\] = \["Announcements"\]/);
+  assert.match(page, /const roleNavigation: Record<Role, View\[]>/);
+  assert.match(page, /Employee: \["Apps", "Announcements", "Feed", "Groups", "People", "Jobs"\]/);
+  assert.match(page, /Manager: \["Apps", "Announcements", "Feed", "Groups", "People", "Jobs", "Team", "Requests"\]/);
+  assert.match(page, /Admin: \["Apps", "Announcements", "Feed", "Groups", "People", "Jobs", "Admin"\]/);
   assert.match(page, /Announcements: "Company Updates"/);
   assert.match(page, /className="brand-home"/);
   assert.doesNotMatch(page, /const nav: View\[\] = \["Home"\]/);
@@ -122,12 +125,27 @@ test("keeps role defaults separate and enforces authenticated roles", async () =
   assert.match(page, /Manager: \[\.\.\.employeeDefaults, "reet", "talentdirector", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /Admin: \[\.\.\.employeeDefaults, "invsync", "softwaretracker", \.\.\.sharedOptionalApps\]/);
   assert.match(page, /roleCatalogApps\[role\]\.includes\(app\.id\)/);
-  assert.match(page, /profiles"\)\.select\("role, display_name, department"\)/);
-  assert.match(page, /role === "Manager" && \(view === "Team" \|\| view === "Requests"\)/);
-  assert.match(page, /role === "Admin" && view === "Admin"/);
+  assert.match(page, /profiles"\)\.select\("role, display_name, department, job_title, operations_manager"\)/);
+  assert.match(page, /role === "Manager" && \(permittedView === "Team" \|\| permittedView === "Requests"\)/);
+  assert.match(page, /role === "Admin" && permittedView === "Admin"/);
   assert.doesNotMatch(page, /Preview role/);
   assert.doesNotMatch(page, /Public read-only review/);
   assert.doesNotMatch(page, /localStorage/);
+});
+
+test("requires a trusted directory match and keeps exact PDF job details", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const migration = await readFile(new URL("../../supabase/migrations/202609030002_secure_directory_access.sql", import.meta.url), "utf8");
+  assert.match(page, /jobTitle \|\| roleCopy\[role\]\.title/);
+  assert.match(page, /Operations manager: \{operationsManager\}/);
+  assert.match(page, /roleNavigation\[role\]\.includes\(view\)/);
+  assert.match(migration, /add column if not exists work_email text/);
+  assert.match(migration, /alter column role drop not null/);
+  assert.match(migration, /role = null/);
+  assert.match(migration, /lower\(d\.work_email\) = login_email/);
+  assert.match(migration, /directory_record\.job_title/);
+  assert.match(migration, /existing_role = 'admin'/);
+  assert.match(migration, /portal members add own approved optional apps/);
 });
 
 test("offers tenant-scoped Microsoft organizational sign-in", async () => {
