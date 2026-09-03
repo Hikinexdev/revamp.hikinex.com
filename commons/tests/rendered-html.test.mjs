@@ -134,6 +134,7 @@ test("offers tenant-scoped Microsoft organizational sign-in", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /Continue with Microsoft/);
   assert.match(page, /provider: "azure"/);
+  assert.match(page, /rpc\("sync_my_employee_role"\)/);
   assert.match(page, /scopes: "email profile"/);
   assert.match(page, /window\.location\.origin/);
   assert.match(page, /skipBrowserRedirect: true/);
