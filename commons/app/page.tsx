@@ -321,8 +321,8 @@ export default function Portal() {
     if (!session || !supabase) return;
     let current = true;
     const loadProfile = async () => {
-      // This server-side function reads the trusted Microsoft identity and applies
-      // its approved directory role. It accepts no user-supplied role or name.
+      // The server applies a directory role when it recognizes the Microsoft
+      // account and otherwise keeps the original Employee access fallback.
       await supabase.rpc("sync_my_employee_role");
       const [profileResult, assignmentResult, updatesResult] = await Promise.all([
         supabase.from("profiles").select("role, display_name, department, job_title, operations_manager").eq("user_id", session.user.id).maybeSingle(),
@@ -332,16 +332,11 @@ export default function Portal() {
       if (!current) return;
       setSavedName({ userId: session.user.id, name: profileResult.data?.display_name });
       const storedRole = profileResult.data?.role;
-      if (profileResult.error || (storedRole !== "employee" && storedRole !== "manager" && storedRole !== "admin")) {
-        setAuthMessage("Your account does not have an assigned H!KINEX portal role. Please contact an administrator.");
-        setProfileReady(true);
-        return;
-      }
-      setRole((storedRole.charAt(0).toUpperCase() + storedRole.slice(1)) as Role);
+      const normalizedRole: Role = storedRole === "manager" ? "Manager" : storedRole === "admin" ? "Admin" : "Employee";
+      setRole(normalizedRole);
       setDepartment(profileResult.data?.department || "H!KINEX");
       setJobTitle(profileResult.data?.job_title || "");
       setOperationsManager(profileResult.data?.operations_manager || "");
-      const normalizedRole = (storedRole.charAt(0).toUpperCase() + storedRole.slice(1)) as Role;
       const requestedView = viewFromLocation();
       setView(requestedView === "Home" || roleNavigation[normalizedRole].includes(requestedView) ? requestedView : "Home");
       if (!assignmentResult.error) setAddedIds((assignmentResult.data ?? []).map((row) => row.application_id));
