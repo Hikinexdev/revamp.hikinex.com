@@ -821,3 +821,37 @@ body{
   .section-head h2,.commons .panel>h2{font-size:23px}
   .app-tile,.request-card{min-height:78px;padding:11px;border-radius:15px}
 }
+
+/* Keep the desktop Commons header in three non-overlapping columns. */
+@media(min-width:761px){
+  .commons>aside{
+    display:grid;
+    grid-template-columns:max-content minmax(0,1fr) max-content;
+    gap:18px;
+  }
+  .commons>aside .brand-home{
+    position:static;
+    order:0;
+    justify-self:start;
+    transform:none;
+  }
+  .commons>aside .brand-home:hover{transform:translateY(-1px)}
+  .commons>aside nav{
+    order:1;
+    min-width:0;
+    justify-content:center;
+  }
+  .commons>aside nav button>span{display:none}
+  .commons>aside .profile-menu{
+    order:2;
+    margin-left:0;
+  }
+}
+
+@media(min-width:761px) and (max-width:1100px){
+  .commons>aside{
+    grid-template-columns:max-content minmax(0,1fr);
+    padding-inline:20px;
+  }
+  .commons>aside nav{justify-content:flex-start}
+}
