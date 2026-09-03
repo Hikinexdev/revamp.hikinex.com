@@ -1,4 +1,4 @@
-name: Deploy HIKINEX concepts to GitHub Pages
+name: Deploy H!KINEX Commons to GitHub Pages
 
 on:
   push:
@@ -24,12 +24,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22
-      - name: Install and build Portal Concepts
-        working-directory: portal-concepts
-        run: npm install && npm run build
-      - name: Install and build Navigator
-        working-directory: navigator
-        run: npm install && npm run build
       - name: Install and build Commons
         working-directory: commons
         env:

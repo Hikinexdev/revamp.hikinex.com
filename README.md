@@ -1,20 +1,13 @@
-# H!KINEX Employee Hub Concepts
+# H!KINEX Commons
 
-Interactive, role-aware portal concepts prepared from the H!KINEX Employee Hub proposal.
+The role-aware H!KINEX employee portal.
 
-## GitHub Pages review links
+## GitHub Pages
 
-1. [Portal Concept Comparison](https://marianahiki.github.io/revamp.hikinex.com/portal-concepts/) — seven layout directions with Employee, Manager, and Admin views.
-2. [H!KINEX Navigator](https://marianahiki.github.io/revamp.hikinex.com/navigator/) — work-first employee portal.
-3. [H!KINEX Commons](https://marianahiki.github.io/revamp.hikinex.com/commons/) — community-first employee portal.
+[Open H!KINEX Commons](https://marianahikinex.github.io/revamp.hikinex.com/)
 
-The previous ChatGPT Sites links remain available as a temporary fallback during the GitHub Pages transition.
+Approved employees can sign in to use their Employee, Manager, or Admin experience, add optional applications to **My Apps**, and access role-default applications.
 
-## H!KINEX Commons review
-
-Commons provides a public, read-only Employee, Manager, and Admin review experience. Approved employees can sign in to add optional applications to **My Apps**; role-default applications remain protected.
-
-- Live review: [marianahiki.github.io/revamp.hikinex.com/commons/](https://marianahiki.github.io/revamp.hikinex.com/commons/)
 - Current milestone: functional application catalog, role defaults, secure external shortcuts, and Supabase-ready persistence
 - Supabase setup: apply `supabase/migrations/202608270001_hikinex_employee_hub.sql`, then provide `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` during the Commons build
 
@@ -31,10 +24,8 @@ No shared passwords or Supabase service-role credentials belong in this reposito
 - Responsive navigation and keyboard-accessible overlays
 - Screaming Frog remains disabled until its destination is confirmed
 
-## Projects
+## Project
 
-- `portal-concepts/`
-- `navigator/`
 - `commons/`
 
-Each folder is a standalone Vinext/React project. Install dependencies and run the local development command documented in its `package.json`.
+The folder contains the Vinext/React project. Install dependencies and run the local development command documented in its `package.json`.
