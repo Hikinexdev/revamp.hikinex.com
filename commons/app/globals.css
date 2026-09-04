@@ -855,3 +855,48 @@ body{
   }
   .commons>aside nav{justify-content:flex-start}
 }
+
+/* Standalone centered brand: the navigation bar has been removed. */
+.portal.commons{display:block}
+.portal-brand-header{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:28px 20px 18px;
+  background:transparent;
+}
+.portal-brand-header .brand-home{
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:var(--ink);
+  padding:5px 18px 8px;
+  transition:background .18s ease,transform .18s ease;
+}
+.portal-brand-header .brand-home:hover{
+  background:rgba(255,255,255,.64);
+  transform:translateY(-1px);
+}
+.portal-brand-header .brand-home:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:3px;
+}
+.portal-brand-header .brand{font-size:30px}
+.portal-brand-header .brand small{font-size:11px;margin-top:8px}
+.portal-brand-header .brand-home:after{
+  content:"";
+  display:block;
+  width:58px;
+  height:3px;
+  margin:13px auto 0;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--teal),#4E9FD5);
+}
+.portal-brand-header+.content{padding-top:8px}
+
+@media(max-width:760px){
+  .portal-brand-header{padding:22px 14px 14px}
+  .portal-brand-header .brand{font-size:26px}
+  .portal-brand-header .brand small{font-size:9px}
+  .portal-brand-header+.content{padding-top:8px}
+}
